@@ -8,21 +8,38 @@
         Topmost="True"
         ShowInTaskbar="False"
         IsHitTestVisible="False"
-        Width="100" Height="100">
+        Width="120" Height="120">
 
     <Grid>
-        <!-- 하이라이트 원 -->
-        <Ellipse x:Name="HighlightCircle"
+        <!-- Ring 스타일 (테두리만) -->
+        <Ellipse x:Name="RingHighlight"
                 Width="60" Height="60"
                 HorizontalAlignment="Center"
-                VerticalAlignment="Center">
-            <Ellipse.Fill>
-                <RadialGradientBrush>
-                    <GradientStop Color="#80FFFF00" Offset="0"/>
-                    <GradientStop Color="#40FFFF00" Offset="0.7"/>
-                    <GradientStop Color="#00FFFF00" Offset="1"/>
-                </RadialGradientBrush>
-            </Ellipse.Fill>
-        </Ellipse>
+                VerticalAlignment="Center"
+                StrokeThickness="4"
+                Fill="Transparent"
+                Visibility="Collapsed"/>
+
+        <!-- Halo 스타일 (그라데이션) -->
+        <Ellipse x:Name="HaloHighlight"
+                Width="60" Height="60"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                Visibility="Visible"/>
+
+        <!-- Filled 스타일 (채워진 원) -->
+        <Ellipse x:Name="FilledHighlight"
+                Width="60" Height="60"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                Visibility="Collapsed"/>
+
+        <!-- Squircle 스타일 (둥근 사각형) -->
+        <Border x:Name="SquircleHighlight"
+               Width="60" Height="60"
+               CornerRadius="12"
+               HorizontalAlignment="Center"
+               VerticalAlignment="Center"
+               Visibility="Collapsed"/>
     </Grid>
 </Window>

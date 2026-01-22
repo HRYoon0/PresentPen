@@ -10,6 +10,18 @@
         WindowState="Maximized">
 
     <Grid>
+        <!-- 확대된 이미지 (스포트라이트 영역에 표시) -->
+        <Image x:Name="ZoomedImage"
+               Stretch="None"
+               Visibility="Collapsed">
+            <Image.Clip>
+                <EllipseGeometry x:Name="ZoomClip"
+                                Center="960,540"
+                                RadiusX="150"
+                                RadiusY="150"/>
+            </Image.Clip>
+        </Image>
+
         <!-- 어두운 마스크 (스포트라이트 영역 제외) -->
         <Grid x:Name="MaskGrid">
             <Grid.OpacityMask>
@@ -18,11 +30,9 @@
                         <GeometryDrawing>
                             <GeometryDrawing.Geometry>
                                 <CombinedGeometry GeometryCombineMode="Exclude">
-                                    <!-- 전체 화면 영역 -->
                                     <CombinedGeometry.Geometry1>
                                         <RectangleGeometry x:Name="FullScreenRect" Rect="0,0,1920,1080"/>
                                     </CombinedGeometry.Geometry1>
-                                    <!-- 스포트라이트 원 (제외할 영역) -->
                                     <CombinedGeometry.Geometry2>
                                         <EllipseGeometry x:Name="SpotlightEllipse"
                                                         Center="960,540"
@@ -41,6 +51,28 @@
             <Rectangle Fill="#C0000000"/>
         </Grid>
 
+        <!-- 상태 표시 -->
+        <Border Background="#80000000"
+                CornerRadius="8"
+                Padding="8,4"
+                HorizontalAlignment="Right"
+                VerticalAlignment="Top"
+                Margin="20">
+            <StackPanel Orientation="Horizontal">
+                <TextBlock x:Name="ZoomStatusText"
+                          Text="줌: 1.5x"
+                          Foreground="White"
+                          FontSize="12"/>
+                <TextBlock Text=" | "
+                          Foreground="Gray"
+                          FontSize="12"/>
+                <TextBlock x:Name="ZoomEnabledText"
+                          Text="줌 활성화"
+                          Foreground="LimeGreen"
+                          FontSize="12"/>
+            </StackPanel>
+        </Border>
+
         <!-- 도움말 -->
         <Border Background="#80000000"
                 CornerRadius="8"
@@ -48,7 +80,7 @@
                 HorizontalAlignment="Center"
                 VerticalAlignment="Bottom"
                 Margin="20">
-            <TextBlock Text="마우스 휠: 크기 조절 | ESC: 종료"
+            <TextBlock Text="마우스 휠: 크기 조절 | Shift+휠: 줌 배율 | Space: 줌 토글 | ESC: 종료"
                       Foreground="White"
                       FontSize="12"/>
         </Border>

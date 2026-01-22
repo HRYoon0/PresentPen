@@ -11,46 +11,92 @@
         Cursor="Pen">
 
     <Grid>
-        <!-- 그리기 캔버스 -->
-        <InkCanvas x:Name="DrawCanvas"
-                   Background="Transparent"
-                   EditingMode="Ink">
-            <InkCanvas.DefaultDrawingAttributes>
-                <DrawingAttributes Color="Red" Width="3" Height="3" StylusTip="Ellipse"/>
-            </InkCanvas.DefaultDrawingAttributes>
-        </InkCanvas>
+        <!-- 배경 (투명/화이트보드/칠판) -->
+        <Rectangle x:Name="BackgroundRect" Fill="Transparent"/>
 
-        <!-- 색상 팔레트 -->
+        <!-- 커스텀 그리기 캔버스 -->
+        <Canvas x:Name="DrawCanvas"
+                Background="Transparent"
+                MouseLeftButtonDown="Canvas_MouseLeftButtonDown"
+                MouseMove="Canvas_MouseMove"
+                MouseLeftButtonUp="Canvas_MouseLeftButtonUp"/>
+
+        <!-- 상단 툴바 -->
         <StackPanel Orientation="Horizontal"
                    HorizontalAlignment="Center"
                    VerticalAlignment="Top"
                    Margin="0,20,0,0">
-            <Border Background="#80000000" CornerRadius="8" Padding="8">
+            <Border Background="#E0000000" CornerRadius="8" Padding="8">
                 <StackPanel Orientation="Horizontal">
-                    <Button x:Name="RedBtn" Width="30" Height="30" Margin="2"
-                           Background="Red" Click="ColorButton_Click" Tag="Red"/>
-                    <Button x:Name="YellowBtn" Width="30" Height="30" Margin="2"
-                           Background="Yellow" Click="ColorButton_Click" Tag="Yellow"/>
-                    <Button x:Name="GreenBtn" Width="30" Height="30" Margin="2"
-                           Background="LimeGreen" Click="ColorButton_Click" Tag="LimeGreen"/>
-                    <Button x:Name="BlueBtn" Width="30" Height="30" Margin="2"
-                           Background="DodgerBlue" Click="ColorButton_Click" Tag="DodgerBlue"/>
-                    <Button x:Name="WhiteBtn" Width="30" Height="30" Margin="2"
-                           Background="White" Click="ColorButton_Click" Tag="White"/>
+                    <!-- 그리기 도구 -->
+                    <Button x:Name="PenBtn" Width="40" Height="30" Margin="2"
+                           Content="✏️" Click="ToolButton_Click" Tag="Pen"
+                           ToolTip="펜" FontSize="14"/>
+                    <Button x:Name="HighlighterBtn" Width="40" Height="30" Margin="2"
+                           Content="🖍️" Click="ToolButton_Click" Tag="Highlighter"
+                           ToolTip="형광펜" FontSize="14"/>
+                    <Button x:Name="LineBtn" Width="40" Height="30" Margin="2"
+                           Content="╱" Click="ToolButton_Click" Tag="Line"
+                           ToolTip="직선" FontSize="14" FontWeight="Bold"/>
+                    <Button x:Name="ArrowBtn" Width="40" Height="30" Margin="2"
+                           Content="→" Click="ToolButton_Click" Tag="Arrow"
+                           ToolTip="화살표" FontSize="14"/>
+                    <Button x:Name="RectBtn" Width="40" Height="30" Margin="2"
+                           Content="▢" Click="ToolButton_Click" Tag="Rectangle"
+                           ToolTip="사각형" FontSize="14"/>
+                    <Button x:Name="CircleBtn" Width="40" Height="30" Margin="2"
+                           Content="○" Click="ToolButton_Click" Tag="Circle"
+                           ToolTip="원" FontSize="14"/>
+
                     <Rectangle Width="1" Fill="#40FFFFFF" Margin="8,4"/>
-                    <Button x:Name="ClearBtn" Width="60" Height="30" Margin="2"
+
+                    <!-- 색상 -->
+                    <Button Width="30" Height="30" Margin="2"
+                           Background="Red" Click="ColorButton_Click" Tag="Red"/>
+                    <Button Width="30" Height="30" Margin="2"
+                           Background="Yellow" Click="ColorButton_Click" Tag="Yellow"/>
+                    <Button Width="30" Height="30" Margin="2"
+                           Background="LimeGreen" Click="ColorButton_Click" Tag="LimeGreen"/>
+                    <Button Width="30" Height="30" Margin="2"
+                           Background="DodgerBlue" Click="ColorButton_Click" Tag="DodgerBlue"/>
+                    <Button Width="30" Height="30" Margin="2"
+                           Background="White" Click="ColorButton_Click" Tag="White"/>
+                    <Button Width="30" Height="30" Margin="2"
+                           Background="Black" Click="ColorButton_Click" Tag="Black"/>
+
+                    <Rectangle Width="1" Fill="#40FFFFFF" Margin="8,4"/>
+
+                    <!-- 배경 모드 -->
+                    <Button x:Name="TransparentBgBtn" Width="40" Height="30" Margin="2"
+                           Content="투명" Click="BackgroundButton_Click" Tag="Transparent"
+                           Background="#333" Foreground="White" FontSize="10"/>
+                    <Button x:Name="WhiteboardBtn" Width="40" Height="30" Margin="2"
+                           Content="화이트" Click="BackgroundButton_Click" Tag="Whiteboard"
+                           Background="White" Foreground="Black" FontSize="10"/>
+                    <Button x:Name="BlackboardBtn" Width="40" Height="30" Margin="2"
+                           Content="칠판" Click="BackgroundButton_Click" Tag="Blackboard"
+                           Background="#1A472A" Foreground="White" FontSize="10"/>
+
+                    <Rectangle Width="1" Fill="#40FFFFFF" Margin="8,4"/>
+
+                    <!-- 작업 버튼 -->
+                    <Button Width="40" Height="30" Margin="2"
+                           Content="↩" Click="UndoButton_Click"
+                           ToolTip="실행 취소 (Ctrl+Z)" FontSize="16"
+                           Background="#FF9800" Foreground="White"/>
+                    <Button Width="50" Height="30" Margin="2"
                            Content="지우기" Click="ClearButton_Click"
                            Background="#FF5555" Foreground="White" FontWeight="Bold"/>
                 </StackPanel>
             </Border>
         </StackPanel>
 
-        <!-- 펜 두께 조절 -->
+        <!-- 좌측 펜 두께 조절 -->
         <StackPanel Orientation="Vertical"
                    HorizontalAlignment="Left"
                    VerticalAlignment="Center"
                    Margin="20,0,0,0">
-            <Border Background="#80000000" CornerRadius="8" Padding="8">
+            <Border Background="#E0000000" CornerRadius="8" Padding="8">
                 <StackPanel>
                     <TextBlock Text="두께" Foreground="White" FontSize="11"
                               HorizontalAlignment="Center" Margin="0,0,0,4"/>
@@ -67,6 +113,19 @@
             </Border>
         </StackPanel>
 
+        <!-- 현재 도구 표시 -->
+        <Border Background="#E0000000"
+                CornerRadius="8"
+                Padding="8,4"
+                HorizontalAlignment="Right"
+                VerticalAlignment="Top"
+                Margin="20">
+            <TextBlock x:Name="CurrentToolText"
+                      Text="도구: 펜"
+                      Foreground="White"
+                      FontSize="12"/>
+        </Border>
+
         <!-- 도움말 -->
         <Border Background="#80000000"
                 CornerRadius="8"
@@ -74,7 +133,7 @@
                 HorizontalAlignment="Center"
                 VerticalAlignment="Bottom"
                 Margin="20">
-            <TextBlock Text="마우스로 그리기 | Ctrl+Shift+C: 지우기 | ESC: 종료"
+            <TextBlock Text="마우스로 그리기 | Ctrl+Z: 실행 취소 | Ctrl+Shift+C: 지우기 | ESC: 종료"
                       Foreground="White"
                       FontSize="12"/>
         </Border>
