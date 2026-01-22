@@ -1,0 +1,56 @@
+<Window x:Class="PresentPen.Views.SpotlightWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Spotlight"
+        WindowStyle="None"
+        AllowsTransparency="True"
+        Background="Transparent"
+        Topmost="True"
+        ShowInTaskbar="False"
+        WindowState="Maximized">
+
+    <Grid>
+        <!-- 어두운 마스크 (스포트라이트 영역 제외) -->
+        <Grid x:Name="MaskGrid">
+            <Grid.OpacityMask>
+                <DrawingBrush>
+                    <DrawingBrush.Drawing>
+                        <GeometryDrawing>
+                            <GeometryDrawing.Geometry>
+                                <CombinedGeometry GeometryCombineMode="Exclude">
+                                    <!-- 전체 화면 영역 -->
+                                    <CombinedGeometry.Geometry1>
+                                        <RectangleGeometry x:Name="FullScreenRect" Rect="0,0,1920,1080"/>
+                                    </CombinedGeometry.Geometry1>
+                                    <!-- 스포트라이트 원 (제외할 영역) -->
+                                    <CombinedGeometry.Geometry2>
+                                        <EllipseGeometry x:Name="SpotlightEllipse"
+                                                        Center="960,540"
+                                                        RadiusX="150"
+                                                        RadiusY="150"/>
+                                    </CombinedGeometry.Geometry2>
+                                </CombinedGeometry>
+                            </GeometryDrawing.Geometry>
+                            <GeometryDrawing.Brush>
+                                <SolidColorBrush Color="White"/>
+                            </GeometryDrawing.Brush>
+                        </GeometryDrawing>
+                    </DrawingBrush.Drawing>
+                </DrawingBrush>
+            </Grid.OpacityMask>
+            <Rectangle Fill="#C0000000"/>
+        </Grid>
+
+        <!-- 도움말 -->
+        <Border Background="#80000000"
+                CornerRadius="8"
+                Padding="12,8"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Bottom"
+                Margin="20">
+            <TextBlock Text="마우스 휠: 크기 조절 | ESC: 종료"
+                      Foreground="White"
+                      FontSize="12"/>
+        </Border>
+    </Grid>
+</Window>

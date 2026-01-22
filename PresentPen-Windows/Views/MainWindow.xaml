@@ -1,0 +1,102 @@
+<Window x:Class="PresentPen.Views.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:tb="http://www.hardcodet.net/taskbar"
+        Title="PresentPen"
+        Width="380" Height="480"
+        WindowStartupLocation="CenterScreen"
+        ResizeMode="NoResize"
+        Background="{StaticResource BackgroundBrush}">
+
+    <Grid Margin="24">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- 제목 -->
+        <StackPanel Grid.Row="0" Margin="0,0,0,24">
+            <TextBlock Text="PresentPen"
+                      FontSize="28"
+                      FontWeight="Bold"
+                      Foreground="{StaticResource PrimaryBrush}"/>
+            <TextBlock Text="프레젠테이션 도구"
+                      FontSize="14"
+                      Foreground="Gray"
+                      Margin="0,4,0,0"/>
+        </StackPanel>
+
+        <!-- 현재 상태 -->
+        <Border Grid.Row="1"
+               Background="{StaticResource SurfaceBrush}"
+               CornerRadius="8"
+               Padding="16"
+               Margin="0,0,0,16">
+            <StackPanel>
+                <TextBlock Text="현재 상태"
+                          FontSize="12"
+                          Foreground="Gray"
+                          Margin="0,0,0,8"/>
+                <TextBlock x:Name="StatusText"
+                          Text="대기 중"
+                          FontSize="18"
+                          FontWeight="SemiBold"
+                          Foreground="{StaticResource TextBrush}"/>
+            </StackPanel>
+        </Border>
+
+        <!-- 기능 버튼들 -->
+        <StackPanel Grid.Row="2">
+            <Button Content="🔍  화면 확대 (Ctrl+Shift+Z)"
+                   Style="{StaticResource PrimaryButton}"
+                   Margin="0,4"
+                   Click="ZoomButton_Click"/>
+            <Button Content="✏️  그리기 (Ctrl+Shift+D)"
+                   Style="{StaticResource PrimaryButton}"
+                   Margin="0,4"
+                   Click="DrawButton_Click"/>
+            <Button Content="💡  스포트라이트 (Ctrl+Shift+S)"
+                   Style="{StaticResource PrimaryButton}"
+                   Margin="0,4"
+                   Click="SpotlightButton_Click"/>
+            <Button Content="⏱️  타이머 (Ctrl+Shift+T)"
+                   Style="{StaticResource PrimaryButton}"
+                   Margin="0,4"
+                   Click="TimerButton_Click"/>
+            <Button Content="✨  커서 하이라이트 (Ctrl+Shift+H)"
+                   Style="{StaticResource PrimaryButton}"
+                   Margin="0,4"
+                   Click="HighlightButton_Click"/>
+        </StackPanel>
+
+        <!-- 하단 버튼 -->
+        <StackPanel Grid.Row="3"
+                   Orientation="Horizontal"
+                   HorizontalAlignment="Center"
+                   Margin="0,16,0,0">
+            <Button Content="설정"
+                   Width="80"
+                   Margin="4,0"
+                   Click="SettingsButton_Click"
+                   Background="#333"
+                   Foreground="White"
+                   Padding="8,6"/>
+            <Button Content="최소화"
+                   Width="80"
+                   Margin="4,0"
+                   Click="MinimizeButton_Click"
+                   Background="#333"
+                   Foreground="White"
+                   Padding="8,6"/>
+            <Button Content="종료"
+                   Width="80"
+                   Margin="4,0"
+                   Click="ExitButton_Click"
+                   Background="#F44336"
+                   Foreground="White"
+                   Padding="8,6"/>
+        </StackPanel>
+    </Grid>
+</Window>

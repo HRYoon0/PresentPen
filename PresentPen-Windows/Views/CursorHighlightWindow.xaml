@@ -1,0 +1,28 @@
+<Window x:Class="PresentPen.Views.CursorHighlightWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Cursor Highlight"
+        WindowStyle="None"
+        AllowsTransparency="True"
+        Background="Transparent"
+        Topmost="True"
+        ShowInTaskbar="False"
+        IsHitTestVisible="False"
+        Width="100" Height="100">
+
+    <Grid>
+        <!-- 하이라이트 원 -->
+        <Ellipse x:Name="HighlightCircle"
+                Width="60" Height="60"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center">
+            <Ellipse.Fill>
+                <RadialGradientBrush>
+                    <GradientStop Color="#80FFFF00" Offset="0"/>
+                    <GradientStop Color="#40FFFF00" Offset="0.7"/>
+                    <GradientStop Color="#00FFFF00" Offset="1"/>
+                </RadialGradientBrush>
+            </Ellipse.Fill>
+        </Ellipse>
+    </Grid>
+</Window>
