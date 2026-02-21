@@ -179,14 +179,14 @@
                             <TextBlock Grid.Row="4" Grid.Column="0" Text="커서 하이라이트" Foreground="{StaticResource TextBrush}" Margin="0,2"/>
                             <TextBlock Grid.Row="4" Grid.Column="1" Text="Ctrl+5" Foreground="Gray" Margin="0,2"/>
 
-                            <TextBlock Grid.Row="5" Grid.Column="0" Text="실행 취소" Foreground="{StaticResource TextBrush}" Margin="0,2"/>
-                            <TextBlock Grid.Row="5" Grid.Column="1" Text="Ctrl+Z" Foreground="Gray" Margin="0,2"/>
+                            <TextBlock Grid.Row="5" Grid.Column="0" Text="커서 스타일 순환" Foreground="{StaticResource TextBrush}" Margin="0,2"/>
+                            <TextBlock Grid.Row="5" Grid.Column="1" Text="Ctrl+Shift+5" Foreground="Gray" Margin="0,2"/>
 
-                            <TextBlock Grid.Row="6" Grid.Column="0" Text="그리기 지우기" Foreground="{StaticResource TextBrush}" Margin="0,2"/>
-                            <TextBlock Grid.Row="6" Grid.Column="1" Text="E" Foreground="Gray" Margin="0,2"/>
+                            <TextBlock Grid.Row="6" Grid.Column="0" Text="커서 색상 순환" Foreground="{StaticResource TextBrush}" Margin="0,2"/>
+                            <TextBlock Grid.Row="6" Grid.Column="1" Text="Ctrl+Alt+5" Foreground="Gray" Margin="0,2"/>
 
-                            <TextBlock Grid.Row="7" Grid.Column="0" Text="현재 모드 종료" Foreground="{StaticResource TextBrush}" Margin="0,2"/>
-                            <TextBlock Grid.Row="7" Grid.Column="1" Text="ESC" Foreground="Gray" Margin="0,2"/>
+                            <TextBlock Grid.Row="7" Grid.Column="0" Text="스포트라이트 줌 토글" Foreground="{StaticResource TextBrush}" Margin="0,2"/>
+                            <TextBlock Grid.Row="7" Grid.Column="1" Text="Ctrl+Shift+4" Foreground="Gray" Margin="0,2"/>
                         </Grid>
                     </StackPanel>
                 </GroupBox>

@@ -22,7 +22,23 @@
             </Image.RenderTransform>
         </Image>
 
-        <!-- 줌 레벨 표시 -->
+        <!-- 스포트라이트 오버레이 (줌 내부) -->
+        <Canvas x:Name="SpotlightOverlay" Visibility="Collapsed" IsHitTestVisible="False">
+            <Path x:Name="SpotlightPath" Fill="#CC000000"/>
+        </Canvas>
+
+        <!-- 그리기 오버레이 (줌 내부) -->
+        <Canvas x:Name="DrawOverlay" Visibility="Collapsed"
+                MouseLeftButtonDown="DrawOverlay_MouseLeftButtonDown"
+                MouseMove="DrawOverlay_MouseMove"
+                MouseLeftButtonUp="DrawOverlay_MouseLeftButtonUp"/>
+
+        <!-- 커서 하이라이트 오버레이 (줌 내부) -->
+        <Canvas x:Name="CursorOverlay" Visibility="Collapsed" IsHitTestVisible="False">
+            <Ellipse x:Name="ZoomCursorHighlight" Width="60" Height="60"/>
+        </Canvas>
+
+        <!-- 줌 레벨 + 기능 표시 -->
         <Border Background="#80000000"
                 CornerRadius="8"
                 Padding="12,6"
@@ -37,15 +53,19 @@
         </Border>
 
         <!-- 도움말 -->
-        <Border Background="#80000000"
+        <Border x:Name="HelpBorder"
+                Background="#B0000000"
                 CornerRadius="8"
                 Padding="12,8"
                 HorizontalAlignment="Center"
                 VerticalAlignment="Bottom"
                 Margin="20">
-            <TextBlock Text="마우스 휠: 확대/축소 | ESC: 종료"
-                      Foreground="White"
-                      FontSize="12"/>
+            <StackPanel>
+                <TextBlock Text="마우스 휠: 확대/축소 | Ctrl+1: 줌 위에 그리기 | Ctrl+3: 커서 하이라이트 | Ctrl+4: 스포트라이트"
+                          Foreground="White" FontSize="11" HorizontalAlignment="Center"/>
+                <TextBlock Text="ESC: 종료"
+                          Foreground="White" FontSize="11" HorizontalAlignment="Center"/>
+            </StackPanel>
         </Border>
     </Grid>
 </Window>

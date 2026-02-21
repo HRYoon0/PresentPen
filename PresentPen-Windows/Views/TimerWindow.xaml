@@ -7,61 +7,52 @@
         Background="Transparent"
         Topmost="True"
         ShowInTaskbar="False"
-        ResizeMode="NoResize"
-        Width="200" Height="120"
-        MouseLeftButtonDown="Window_MouseLeftButtonDown">
+        WindowState="Maximized">
 
-    <Border Background="#E0000000"
-            CornerRadius="12"
-            Padding="16">
-        <Grid>
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="*"/>
-                <RowDefinition Height="Auto"/>
-            </Grid.RowDefinitions>
+    <Grid x:Name="RootGrid">
+        <!-- 검은색 배경 -->
+        <Rectangle x:Name="BackgroundRect" Fill="#F0000000"/>
 
-            <!-- 타이머 표시 -->
+        <!-- 상단 모드 인디케이터 -->
+        <Border Background="#D94CAF50"
+                CornerRadius="20"
+                Padding="20,8"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Top"
+                Margin="0,40,0,0">
+            <TextBlock Text="⏱ 타이머"
+                      Foreground="White"
+                      FontSize="16"
+                      FontWeight="SemiBold"/>
+        </Border>
+
+        <!-- 중앙 시간 표시 -->
+        <StackPanel HorizontalAlignment="Center"
+                   VerticalAlignment="Center">
             <TextBlock x:Name="TimerDisplay"
-                      Grid.Row="0"
-                      Text="00:00"
-                      FontSize="42"
+                      Text="05:00"
+                      FontSize="200"
                       FontWeight="Bold"
                       Foreground="White"
+                      FontFamily="Consolas"
                       HorizontalAlignment="Center"/>
 
-            <!-- 컨트롤 버튼 -->
-            <StackPanel Grid.Row="2"
-                       Orientation="Horizontal"
-                       HorizontalAlignment="Center"
-                       Margin="0,8,0,0">
-                <Button x:Name="StartStopBtn"
-                       Content="▶"
-                       Width="40" Height="30"
-                       Margin="4,0"
-                       Click="StartStopButton_Click"
-                       Background="#4CAF50"
-                       Foreground="White"
-                       FontSize="14"
-                       BorderThickness="0"/>
-                <Button x:Name="ResetBtn"
-                       Content="↺"
-                       Width="40" Height="30"
-                       Margin="4,0"
-                       Click="ResetButton_Click"
-                       Background="#FF9800"
-                       Foreground="White"
-                       FontSize="14"
-                       BorderThickness="0"/>
-                <Button Content="✕"
-                       Width="40" Height="30"
-                       Margin="4,0"
-                       Click="CloseButton_Click"
-                       Background="#F44336"
-                       Foreground="White"
-                       FontSize="14"
-                       BorderThickness="0"/>
-            </StackPanel>
-        </Grid>
-    </Border>
+            <!-- 프리셋 안내 -->
+            <TextBlock x:Name="PresetLabel"
+                      Text="[1] 1분   [3] 3분   [5] 5분   [0] 10분"
+                      FontSize="18"
+                      FontFamily="Consolas"
+                      Foreground="#CCFFFFFF"
+                      HorizontalAlignment="Center"
+                      Margin="0,20,0,0"/>
+
+            <!-- 상태 안내 -->
+            <TextBlock x:Name="InfoLabel"
+                      Text="스크롤/↑↓: 시간 조절 | Space/Enter: 시작 | ESC: 종료"
+                      FontSize="16"
+                      Foreground="#99FFFFFF"
+                      HorizontalAlignment="Center"
+                      Margin="0,16,0,0"/>
+        </StackPanel>
+    </Grid>
 </Window>

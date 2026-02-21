@@ -17,14 +17,11 @@ namespace PresentPen.Views
             InitializeComponent();
 
             Loaded += OnLoaded;
-
-            // 상태 변경 감지
             AppState.Instance.PropertyChanged += OnAppStateChanged;
         }
 
         private void OnLoaded(object sender, RoutedEventArgs e)
         {
-            // 핫키 매니저 초기화
             var hotkeyManager = HotkeyManager.Instance;
             hotkeyManager.Initialize(this);
             hotkeyManager.HotkeyPressed += OnHotkeyPressed;
@@ -137,14 +134,22 @@ namespace PresentPen.Views
             {
                 _spotlightWindow.Close();
                 _spotlightWindow = null;
+                // 마우스 속도 복원
+                MouseSpeedController.Instance.Stop();
             }
             else
             {
                 CloseAllOverlays();
                 _spotlightWindow = new SpotlightWindow();
-                _spotlightWindow.Closed += (s, e) => _spotlightWindow = null;
+                _spotlightWindow.Closed += (s, e) =>
+                {
+                    _spotlightWindow = null;
+                    MouseSpeedController.Instance.Stop();
+                };
                 _spotlightWindow.Show();
                 AppState.Instance.CurrentMode = AppMode.Spotlight;
+                // 마우스 속도 감속 (정밀 조작용)
+                MouseSpeedController.Instance.Start(3);
             }
         }
 
@@ -190,8 +195,16 @@ namespace PresentPen.Views
             _drawingWindow?.Close();
             _drawingWindow = null;
 
-            _spotlightWindow?.Close();
-            _spotlightWindow = null;
+            if (_spotlightWindow != null)
+            {
+                _spotlightWindow.Close();
+                _spotlightWindow = null;
+                MouseSpeedController.Instance.Stop();
+            }
+
+            // 타이머도 닫기
+            _timerWindow?.Close();
+            _timerWindow = null;
 
             AppState.Instance.CurrentMode = AppMode.None;
         }
@@ -205,6 +218,13 @@ namespace PresentPen.Views
         private void HighlightButton_Click(object sender, RoutedEventArgs e)
         {
             AppState.Instance.IsCursorHighlightEnabled = !AppState.Instance.IsCursorHighlightEnabled;
+        }
+
+        private void HelpButton_Click(object sender, RoutedEventArgs e)
+        {
+            var helpWindow = new HelpWindow();
+            helpWindow.Owner = this;
+            helpWindow.ShowDialog();
         }
 
         private void SettingsButton_Click(object sender, RoutedEventArgs e)
@@ -221,14 +241,15 @@ namespace PresentPen.Views
 
         private void ExitButton_Click(object sender, RoutedEventArgs e)
         {
+            MouseSpeedController.Instance.Stop();
             Application.Current.Shutdown();
         }
 
         protected override void OnClosed(EventArgs e)
         {
             CloseAllOverlays();
-            _timerWindow?.Close();
             _cursorHighlightWindow?.Close();
+            MouseSpeedController.Instance.Stop();
             base.OnClosed(e);
         }
     }

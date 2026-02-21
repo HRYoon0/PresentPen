@@ -1,3 +1,4 @@
+using System.Media;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
@@ -9,8 +10,9 @@ namespace PresentPen.Views
     public partial class TimerWindow : Window
     {
         private readonly DispatcherTimer _timer;
-        private int _elapsedSeconds;
-        private bool _isRunning;
+        private int _timeRemaining = 5 * 60; // 기본값: 5분 (초 단위)
+        private bool _isStarted;
+        private bool _isPaused;
 
         public TimerWindow()
         {
@@ -22,79 +24,148 @@ namespace PresentPen.Views
             };
             _timer.Tick += Timer_Tick;
 
-            // 화면 우측 하단에 배치
-            var screenWidth = SystemParameters.PrimaryScreenWidth;
-            var screenHeight = SystemParameters.PrimaryScreenHeight;
-            Left = screenWidth - Width - 20;
-            Top = screenHeight - Height - 60;
+            KeyDown += OnKeyDown;
+            MouseWheel += OnMouseWheel;
+
+            // 포커스 받기
+            Focusable = true;
+            Loaded += (s, e) => Focus();
 
             UpdateDisplay();
         }
 
         private void Timer_Tick(object? sender, EventArgs e)
         {
-            _elapsedSeconds++;
-            AppState.Instance.TimerSeconds = _elapsedSeconds;
+            if (_isPaused) return;
+
+            _timeRemaining--;
+
+            if (_timeRemaining <= 0)
+            {
+                _timeRemaining = 0;
+                _timer.Stop();
+                FlashScreen();
+            }
+
             UpdateDisplay();
         }
 
         private void UpdateDisplay()
         {
-            int minutes = _elapsedSeconds / 60;
-            int seconds = _elapsedSeconds % 60;
-            TimerDisplay.Text = $"{minutes:D2}:{seconds:D2}";
+            int mins = _timeRemaining / 60;
+            int secs = _timeRemaining % 60;
+            TimerDisplay.Text = $"{mins:D2}:{secs:D2}";
 
-            // 5분 이상이면 경고색
-            if (_elapsedSeconds >= 300)
+            // 1분 미만 경고: 빨간색
+            TimerDisplay.Foreground = _timeRemaining < 60 && _isStarted
+                ? new SolidColorBrush(Colors.Red)
+                : new SolidColorBrush(Colors.White);
+
+            // 상태 안내 문구
+            if (!_isStarted)
             {
-                TimerDisplay.Foreground = new SolidColorBrush(Colors.OrangeRed);
+                InfoLabel.Text = "스크롤/↑↓: 시간 조절 | Space/Enter: 시작 | ESC: 종료";
+                PresetLabel.Visibility = Visibility.Visible;
+            }
+            else if (_isPaused)
+            {
+                InfoLabel.Text = "⏸ 일시정지 | Space: 재개 | ESC: 종료";
+                PresetLabel.Visibility = Visibility.Collapsed;
             }
             else
             {
-                TimerDisplay.Foreground = new SolidColorBrush(Colors.White);
+                InfoLabel.Text = "⏵ 진행 중 | Space: 일시정지 | ESC: 종료";
+                PresetLabel.Visibility = Visibility.Collapsed;
             }
         }
 
-        private void StartStopButton_Click(object sender, RoutedEventArgs e)
+        private void FlashScreen()
         {
-            if (_isRunning)
+            // 비프음
+            SystemSounds.Beep.Play();
+
+            // 3번 빨간색 깜빡임
+            var flashTimer = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(250) };
+            int flashCount = 0;
+            flashTimer.Tick += (s, e) =>
             {
-                // 정지
-                _timer.Stop();
-                _isRunning = false;
-                StartStopBtn.Content = "▶";
-                StartStopBtn.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#4CAF50"));
-            }
-            else
+                flashCount++;
+                if (flashCount > 6)
+                {
+                    flashTimer.Stop();
+                    BackgroundRect.Fill = new SolidColorBrush(Color.FromArgb(0xF0, 0, 0, 0));
+                    return;
+                }
+                BackgroundRect.Fill = flashCount % 2 == 1
+                    ? new SolidColorBrush(Color.FromArgb(0x80, 0xFF, 0, 0))
+                    : new SolidColorBrush(Color.FromArgb(0xF0, 0, 0, 0));
+            };
+            flashTimer.Start();
+        }
+
+        private void OnKeyDown(object sender, KeyEventArgs e)
+        {
+            switch (e.Key)
             {
-                // 시작
-                _timer.Start();
-                _isRunning = true;
-                StartStopBtn.Content = "⏸";
-                StartStopBtn.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#2196F3"));
+                case Key.Escape:
+                    Close();
+                    break;
+
+                case Key.Space:
+                case Key.Enter:
+                    if (!_isStarted)
+                    {
+                        // 타이머 시작
+                        _isStarted = true;
+                        _timer.Start();
+                    }
+                    else
+                    {
+                        // 일시정지/재개
+                        _isPaused = !_isPaused;
+                    }
+                    UpdateDisplay();
+                    break;
+
+                // 프리셋 (시작 전에만)
+                case Key.D1:
+                case Key.NumPad1:
+                    if (!_isStarted) { _timeRemaining = 1 * 60; UpdateDisplay(); }
+                    break;
+                case Key.D3:
+                case Key.NumPad3:
+                    if (!_isStarted) { _timeRemaining = 3 * 60; UpdateDisplay(); }
+                    break;
+                case Key.D5:
+                case Key.NumPad5:
+                    if (!_isStarted) { _timeRemaining = 5 * 60; UpdateDisplay(); }
+                    break;
+                case Key.D0:
+                case Key.NumPad0:
+                    if (!_isStarted) { _timeRemaining = 10 * 60; UpdateDisplay(); }
+                    break;
+
+                // 화살표로 1분 단위 조절 (시작 전에만)
+                case Key.Up:
+                    if (!_isStarted) { _timeRemaining += 60; UpdateDisplay(); }
+                    break;
+                case Key.Down:
+                    if (!_isStarted) { _timeRemaining = Math.Max(0, _timeRemaining - 60); UpdateDisplay(); }
+                    break;
             }
+
+            e.Handled = true;
         }
 
-        private void ResetButton_Click(object sender, RoutedEventArgs e)
+        private void OnMouseWheel(object sender, MouseWheelEventArgs e)
         {
-            _timer.Stop();
-            _isRunning = false;
-            _elapsedSeconds = 0;
-            AppState.Instance.TimerSeconds = 0;
-            StartStopBtn.Content = "▶";
-            StartStopBtn.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#4CAF50"));
-            UpdateDisplay();
-        }
-
-        private void CloseButton_Click(object sender, RoutedEventArgs e)
-        {
-            Close();
-        }
-
-        private void Window_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
-        {
-            // 드래그로 이동 가능
-            DragMove();
+            // 시작 전에만 스크롤로 시간 조절
+            if (!_isStarted)
+            {
+                _timeRemaining += e.Delta > 0 ? 10 : -10;
+                _timeRemaining = Math.Max(0, _timeRemaining);
+                UpdateDisplay();
+            }
         }
 
         protected override void OnClosed(EventArgs e)

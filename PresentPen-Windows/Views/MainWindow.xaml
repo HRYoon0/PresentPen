@@ -76,6 +76,13 @@
                    Orientation="Horizontal"
                    HorizontalAlignment="Center"
                    Margin="0,16,0,0">
+            <Button Content="도움말"
+                   Width="80"
+                   Margin="4,0"
+                   Click="HelpButton_Click"
+                   Background="#2196F3"
+                   Foreground="White"
+                   Padding="8,6"/>
             <Button Content="설정"
                    Width="80"
                    Margin="4,0"

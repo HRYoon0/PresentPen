@@ -126,16 +126,22 @@
                       FontSize="12"/>
         </Border>
 
-        <!-- 도움말 -->
-        <Border Background="#80000000"
+        <!-- 도움말 (5초 후 자동 숨김) -->
+        <Border x:Name="HelpBorder"
+                Background="#B0000000"
                 CornerRadius="8"
                 Padding="12,8"
                 HorizontalAlignment="Center"
                 VerticalAlignment="Bottom"
                 Margin="20">
-            <TextBlock Text="마우스로 그리기 | Ctrl+Z: 실행 취소 | E: 전체 지우기 | ESC: 종료"
-                      Foreground="White"
-                      FontSize="12"/>
+            <StackPanel>
+                <TextBlock Text="색상: R(빨강) G(초록) B(파랑) Y(노랑) O(주황) P(분홍) | Shift+색상: 형광펜"
+                          Foreground="White" FontSize="11" HorizontalAlignment="Center"/>
+                <TextBlock Text="도구: Shift(직선) Ctrl(사각형) Tab(원) Ctrl+Shift(화살표) | W(화이트보드) K(칠판)"
+                          Foreground="White" FontSize="11" HorizontalAlignment="Center"/>
+                <TextBlock Text="Ctrl+Z: 실행 취소 | E: 전체 지우기 | 스크롤: 선 굵기 | ESC: 종료"
+                          Foreground="White" FontSize="11" HorizontalAlignment="Center"/>
+            </StackPanel>
         </Border>
     </Grid>
 </Window>

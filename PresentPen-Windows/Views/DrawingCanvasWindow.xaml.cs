@@ -3,6 +3,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Shapes;
+using System.Windows.Threading;
 using PresentPen.Models;
 
 namespace PresentPen.Views
@@ -15,6 +16,7 @@ namespace PresentPen.Views
         private Polyline? _currentPolyline;
         private Shape? _previewShape;
         private List<UIElement> _undoStack = new();
+        private DrawingTool? _originalTool;
 
         private static readonly Dictionary<DrawingTool, string> ToolNames = new()
         {
@@ -35,6 +37,17 @@ namespace PresentPen.Views
             UpdateToolDisplay();
 
             KeyDown += OnKeyDown;
+            KeyUp += OnKeyUp;
+            MouseWheel += OnMouseWheel;
+
+            // 5초 후 도움말 숨기기
+            var hideTimer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(5) };
+            hideTimer.Tick += (s, e) =>
+            {
+                HelpBorder.Visibility = Visibility.Collapsed;
+                hideTimer.Stop();
+            };
+            hideTimer.Start();
         }
 
         // === 도구 선택 ===
@@ -54,7 +67,8 @@ namespace PresentPen.Views
         private void UpdateToolDisplay()
         {
             var tool = AppState.Instance.CurrentTool;
-            CurrentToolText.Text = $"도구: {ToolNames.GetValueOrDefault(tool, "펜")}";
+            var highlighter = AppState.Instance.IsHighlighterMode ? " (형광)" : "";
+            CurrentToolText.Text = $"도구: {ToolNames.GetValueOrDefault(tool, "펜")}{highlighter}";
         }
 
         // === 색상 선택 ===
@@ -72,21 +86,26 @@ namespace PresentPen.Views
         {
             if (sender is Button button && button.Tag is string modeName)
             {
-                switch (modeName)
-                {
-                    case "Transparent":
-                        AppState.Instance.BackgroundMode = BackgroundMode.Transparent;
-                        BackgroundRect.Fill = Brushes.Transparent;
-                        break;
-                    case "Whiteboard":
-                        AppState.Instance.BackgroundMode = BackgroundMode.Whiteboard;
-                        BackgroundRect.Fill = Brushes.White;
-                        break;
-                    case "Blackboard":
-                        AppState.Instance.BackgroundMode = BackgroundMode.Blackboard;
-                        BackgroundRect.Fill = new SolidColorBrush(Color.FromRgb(26, 71, 42));
-                        break;
-                }
+                SetBackground(modeName);
+            }
+        }
+
+        private void SetBackground(string modeName)
+        {
+            switch (modeName)
+            {
+                case "Transparent":
+                    AppState.Instance.BackgroundMode = BackgroundMode.Transparent;
+                    BackgroundRect.Fill = Brushes.Transparent;
+                    break;
+                case "Whiteboard":
+                    AppState.Instance.BackgroundMode = BackgroundMode.Whiteboard;
+                    BackgroundRect.Fill = Brushes.White;
+                    break;
+                case "Blackboard":
+                    AppState.Instance.BackgroundMode = BackgroundMode.Blackboard;
+                    BackgroundRect.Fill = new SolidColorBrush(Color.FromRgb(26, 71, 42));
+                    break;
             }
         }
 
@@ -99,12 +118,23 @@ namespace PresentPen.Views
             AppState.Instance.PenThickness = thickness;
         }
 
+        // === 스크롤로 선 굵기 조절 ===
+        private void OnMouseWheel(object sender, MouseWheelEventArgs e)
+        {
+            var delta = e.Delta > 0 ? 1 : -1;
+            AppState.Instance.PenThickness += delta;
+            ThicknessSlider.Value = AppState.Instance.PenThickness;
+        }
+
         // === 그리기 시작 ===
         private void Canvas_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             _isDrawing = true;
             _startPoint = e.GetPosition(DrawCanvas);
             _lastPoint = _startPoint;
+
+            // 수정자 키에 따른 임시 도구 변경
+            UpdateToolForModifiers();
 
             var tool = AppState.Instance.CurrentTool;
 
@@ -119,7 +149,7 @@ namespace PresentPen.Views
                     StrokeEndLineCap = PenLineCap.Round
                 };
 
-                if (tool == DrawingTool.Highlighter)
+                if (tool == DrawingTool.Highlighter || AppState.Instance.IsHighlighterMode)
                 {
                     _currentPolyline.Opacity = 0.4;
                     _currentPolyline.StrokeThickness = AppState.Instance.PenThickness * 3;
@@ -130,6 +160,29 @@ namespace PresentPen.Views
             }
 
             DrawCanvas.CaptureMouse();
+        }
+
+        // 수정자 키로 임시 도구 변경 (macOS 동일)
+        private void UpdateToolForModifiers()
+        {
+            var ctrl = Keyboard.IsKeyDown(Key.LeftCtrl) || Keyboard.IsKeyDown(Key.RightCtrl);
+            var shift = Keyboard.IsKeyDown(Key.LeftShift) || Keyboard.IsKeyDown(Key.RightShift);
+
+            if (ctrl && shift)
+            {
+                _originalTool = AppState.Instance.CurrentTool;
+                AppState.Instance.CurrentTool = DrawingTool.Arrow;
+            }
+            else if (ctrl)
+            {
+                _originalTool = AppState.Instance.CurrentTool;
+                AppState.Instance.CurrentTool = DrawingTool.Rectangle;
+            }
+            else if (shift)
+            {
+                _originalTool = AppState.Instance.CurrentTool;
+                AppState.Instance.CurrentTool = DrawingTool.Line;
+            }
         }
 
         // === 그리기 중 ===
@@ -146,7 +199,6 @@ namespace PresentPen.Views
             }
             else
             {
-                // 도형 미리보기
                 UpdatePreviewShape(currentPoint);
             }
 
@@ -164,14 +216,12 @@ namespace PresentPen.Views
             var endPoint = e.GetPosition(DrawCanvas);
             var tool = AppState.Instance.CurrentTool;
 
-            // 미리보기 제거
             if (_previewShape != null)
             {
                 DrawCanvas.Children.Remove(_previewShape);
                 _previewShape = null;
             }
 
-            // 최종 도형 그리기
             if (tool != DrawingTool.Pen && tool != DrawingTool.Highlighter)
             {
                 var shape = CreateFinalShape(_startPoint, endPoint);
@@ -185,6 +235,14 @@ namespace PresentPen.Views
             {
                 _undoStack.Add(_currentPolyline);
                 _currentPolyline = null;
+            }
+
+            // 임시 도구 복원
+            if (_originalTool.HasValue)
+            {
+                AppState.Instance.CurrentTool = _originalTool.Value;
+                _originalTool = null;
+                UpdateToolDisplay();
             }
         }
 
@@ -269,12 +327,9 @@ namespace PresentPen.Views
 
             var geometry = new PathGeometry();
             var figure = new PathFigure { StartPoint = start };
-
-            // 선
             figure.Segments.Add(new LineSegment(end, true));
             geometry.Figures.Add(figure);
 
-            // 화살표 머리
             double angle = Math.Atan2(end.Y - start.Y, end.X - start.X);
             double arrowSize = thickness * 4;
 
@@ -301,10 +356,7 @@ namespace PresentPen.Views
         }
 
         // === Undo ===
-        private void UndoButton_Click(object sender, RoutedEventArgs e)
-        {
-            Undo();
-        }
+        private void UndoButton_Click(object sender, RoutedEventArgs e) => Undo();
 
         public void Undo()
         {
@@ -317,27 +369,122 @@ namespace PresentPen.Views
         }
 
         // === 전체 지우기 ===
-        private void ClearButton_Click(object sender, RoutedEventArgs e)
-        {
-            ClearCanvas();
-        }
+        private void ClearButton_Click(object sender, RoutedEventArgs e) => ClearCanvas();
 
         public void ClearCanvas()
         {
             DrawCanvas.Children.Clear();
             _undoStack.Clear();
+            AppState.Instance.BackgroundMode = BackgroundMode.Transparent;
+            BackgroundRect.Fill = Brushes.Transparent;
         }
 
-        // === 키보드 입력 ===
+        // === 키보드 입력 (macOS 동일 단축키) ===
         private void OnKeyDown(object sender, KeyEventArgs e)
         {
-            if (e.Key == Key.Escape)
+            var shift = Keyboard.IsKeyDown(Key.LeftShift) || Keyboard.IsKeyDown(Key.RightShift);
+
+            switch (e.Key)
             {
-                Close();
+                case Key.Escape:
+                    Close();
+                    break;
+
+                case Key.Z:
+                    if (Keyboard.Modifiers == ModifierKeys.Control) Undo();
+                    break;
+
+                // 색상 단축키 (R/G/B/Y/O/P)
+                case Key.R:
+                    AppState.Instance.PenColor = Colors.Red;
+                    AppState.Instance.IsHighlighterMode = shift;
+                    if (shift) AppState.Instance.CurrentTool = DrawingTool.Highlighter;
+                    else if (AppState.Instance.CurrentTool == DrawingTool.Highlighter) AppState.Instance.CurrentTool = DrawingTool.Pen;
+                    UpdateToolDisplay();
+                    break;
+                case Key.G:
+                    AppState.Instance.PenColor = Colors.Green;
+                    AppState.Instance.IsHighlighterMode = shift;
+                    if (shift) AppState.Instance.CurrentTool = DrawingTool.Highlighter;
+                    else if (AppState.Instance.CurrentTool == DrawingTool.Highlighter) AppState.Instance.CurrentTool = DrawingTool.Pen;
+                    UpdateToolDisplay();
+                    break;
+                case Key.B:
+                    AppState.Instance.PenColor = Colors.Blue;
+                    AppState.Instance.IsHighlighterMode = shift;
+                    if (shift) AppState.Instance.CurrentTool = DrawingTool.Highlighter;
+                    else if (AppState.Instance.CurrentTool == DrawingTool.Highlighter) AppState.Instance.CurrentTool = DrawingTool.Pen;
+                    UpdateToolDisplay();
+                    break;
+                case Key.Y:
+                    AppState.Instance.PenColor = Colors.Yellow;
+                    AppState.Instance.IsHighlighterMode = shift;
+                    if (shift) AppState.Instance.CurrentTool = DrawingTool.Highlighter;
+                    else if (AppState.Instance.CurrentTool == DrawingTool.Highlighter) AppState.Instance.CurrentTool = DrawingTool.Pen;
+                    UpdateToolDisplay();
+                    break;
+                case Key.O:
+                    AppState.Instance.PenColor = Colors.Orange;
+                    AppState.Instance.IsHighlighterMode = shift;
+                    if (shift) AppState.Instance.CurrentTool = DrawingTool.Highlighter;
+                    else if (AppState.Instance.CurrentTool == DrawingTool.Highlighter) AppState.Instance.CurrentTool = DrawingTool.Pen;
+                    UpdateToolDisplay();
+                    break;
+                case Key.P:
+                    AppState.Instance.PenColor = Colors.HotPink;
+                    AppState.Instance.IsHighlighterMode = shift;
+                    if (shift) AppState.Instance.CurrentTool = DrawingTool.Highlighter;
+                    else if (AppState.Instance.CurrentTool == DrawingTool.Highlighter) AppState.Instance.CurrentTool = DrawingTool.Pen;
+                    UpdateToolDisplay();
+                    break;
+
+                // E: 전체 지우기
+                case Key.E:
+                    ClearCanvas();
+                    break;
+
+                // W: 화이트보드 토글
+                case Key.W:
+                    if (AppState.Instance.BackgroundMode == BackgroundMode.Whiteboard)
+                        SetBackground("Transparent");
+                    else
+                        SetBackground("Whiteboard");
+                    break;
+
+                // K: 칠판 토글
+                case Key.K:
+                    if (AppState.Instance.BackgroundMode == BackgroundMode.Blackboard)
+                        SetBackground("Transparent");
+                    else
+                        SetBackground("Blackboard");
+                    break;
+
+                // Tab: 원 도구 전환
+                case Key.Tab:
+                    if (AppState.Instance.CurrentTool != DrawingTool.Circle)
+                    {
+                        _originalTool = AppState.Instance.CurrentTool;
+                        AppState.Instance.CurrentTool = DrawingTool.Circle;
+                    }
+                    else
+                    {
+                        AppState.Instance.CurrentTool = _originalTool ?? DrawingTool.Pen;
+                        _originalTool = null;
+                    }
+                    UpdateToolDisplay();
+                    e.Handled = true;
+                    break;
             }
-            else if (e.Key == Key.Z && Keyboard.Modifiers == ModifierKeys.Control)
+        }
+
+        private void OnKeyUp(object sender, KeyEventArgs e)
+        {
+            // Tab 키 해제 시 원래 도구로 복원 (그리기 중이 아닐 때)
+            if (e.Key == Key.Tab && !_isDrawing && _originalTool.HasValue)
             {
-                Undo();
+                AppState.Instance.CurrentTool = _originalTool.Value;
+                _originalTool = null;
+                UpdateToolDisplay();
             }
         }
 
