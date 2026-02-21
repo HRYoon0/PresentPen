@@ -25,7 +25,6 @@ namespace PresentPen.Views
             var hotkeyManager = HotkeyManager.Instance;
             hotkeyManager.Initialize(this);
             hotkeyManager.HotkeyPressed += OnHotkeyPressed;
-            hotkeyManager.ClearRequested += OnClearRequested;
             hotkeyManager.EscapePressed += OnEscapePressed;
         }
 
@@ -75,14 +74,6 @@ namespace PresentPen.Views
                         ToggleTimer();
                         break;
                 }
-            });
-        }
-
-        private void OnClearRequested()
-        {
-            Dispatcher.Invoke(() =>
-            {
-                _drawingWindow?.ClearCanvas();
             });
         }
 

@@ -54,7 +54,6 @@ namespace PresentPen.Services
         private bool _disposed;
 
         public event Action<AppMode>? HotkeyPressed;
-        public event Action? ClearRequested;
         public event Action? EscapePressed;
         public event Action? CursorStyleCycleRequested;
         public event Action? CursorColorCycleRequested;
