@@ -49,23 +49,23 @@
 
         <!-- 기능 버튼들 -->
         <StackPanel Grid.Row="2">
-            <Button Content="🔍  화면 확대 (Ctrl+Shift+Z)"
+            <Button Content="🔍  화면 확대 (Ctrl+1)"
                    Style="{StaticResource PrimaryButton}"
                    Margin="0,4"
                    Click="ZoomButton_Click"/>
-            <Button Content="✏️  그리기 (Ctrl+Shift+D)"
+            <Button Content="✏️  그리기 (Ctrl+2)"
                    Style="{StaticResource PrimaryButton}"
                    Margin="0,4"
                    Click="DrawButton_Click"/>
-            <Button Content="💡  스포트라이트 (Ctrl+Shift+S)"
-                   Style="{StaticResource PrimaryButton}"
-                   Margin="0,4"
-                   Click="SpotlightButton_Click"/>
-            <Button Content="⏱️  타이머 (Ctrl+Shift+T)"
+            <Button Content="⏱️  타이머 (Ctrl+3)"
                    Style="{StaticResource PrimaryButton}"
                    Margin="0,4"
                    Click="TimerButton_Click"/>
-            <Button Content="✨  커서 하이라이트 (Ctrl+Shift+H)"
+            <Button Content="💡  스포트라이트 (Ctrl+4)"
+                   Style="{StaticResource PrimaryButton}"
+                   Margin="0,4"
+                   Click="SpotlightButton_Click"/>
+            <Button Content="✨  커서 하이라이트 (Ctrl+5)"
                    Style="{StaticResource PrimaryButton}"
                    Margin="0,4"
                    Click="HighlightButton_Click"/>

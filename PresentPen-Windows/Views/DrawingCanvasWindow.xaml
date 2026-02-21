@@ -133,7 +133,7 @@
                 HorizontalAlignment="Center"
                 VerticalAlignment="Bottom"
                 Margin="20">
-            <TextBlock Text="마우스로 그리기 | Ctrl+Z: 실행 취소 | Ctrl+Shift+C: 지우기 | ESC: 종료"
+            <TextBlock Text="마우스로 그리기 | Ctrl+Z: 실행 취소 | E: 전체 지우기 | ESC: 종료"
                       Foreground="White"
                       FontSize="12"/>
         </Border>

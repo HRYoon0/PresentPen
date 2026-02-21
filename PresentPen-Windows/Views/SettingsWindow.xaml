@@ -165,25 +165,25 @@
                             </Grid.RowDefinitions>
 
                             <TextBlock Grid.Row="0" Grid.Column="0" Text="화면 확대" Foreground="{StaticResource TextBrush}" Margin="0,2"/>
-                            <TextBlock Grid.Row="0" Grid.Column="1" Text="Ctrl+Shift+Z" Foreground="Gray" Margin="0,2"/>
+                            <TextBlock Grid.Row="0" Grid.Column="1" Text="Ctrl+1" Foreground="Gray" Margin="0,2"/>
 
                             <TextBlock Grid.Row="1" Grid.Column="0" Text="그리기" Foreground="{StaticResource TextBrush}" Margin="0,2"/>
-                            <TextBlock Grid.Row="1" Grid.Column="1" Text="Ctrl+Shift+D" Foreground="Gray" Margin="0,2"/>
+                            <TextBlock Grid.Row="1" Grid.Column="1" Text="Ctrl+2" Foreground="Gray" Margin="0,2"/>
 
-                            <TextBlock Grid.Row="2" Grid.Column="0" Text="스포트라이트" Foreground="{StaticResource TextBrush}" Margin="0,2"/>
-                            <TextBlock Grid.Row="2" Grid.Column="1" Text="Ctrl+Shift+S" Foreground="Gray" Margin="0,2"/>
+                            <TextBlock Grid.Row="2" Grid.Column="0" Text="타이머" Foreground="{StaticResource TextBrush}" Margin="0,2"/>
+                            <TextBlock Grid.Row="2" Grid.Column="1" Text="Ctrl+3" Foreground="Gray" Margin="0,2"/>
 
-                            <TextBlock Grid.Row="3" Grid.Column="0" Text="타이머" Foreground="{StaticResource TextBrush}" Margin="0,2"/>
-                            <TextBlock Grid.Row="3" Grid.Column="1" Text="Ctrl+Shift+T" Foreground="Gray" Margin="0,2"/>
+                            <TextBlock Grid.Row="3" Grid.Column="0" Text="스포트라이트" Foreground="{StaticResource TextBrush}" Margin="0,2"/>
+                            <TextBlock Grid.Row="3" Grid.Column="1" Text="Ctrl+4" Foreground="Gray" Margin="0,2"/>
 
                             <TextBlock Grid.Row="4" Grid.Column="0" Text="커서 하이라이트" Foreground="{StaticResource TextBrush}" Margin="0,2"/>
-                            <TextBlock Grid.Row="4" Grid.Column="1" Text="Ctrl+Shift+H" Foreground="Gray" Margin="0,2"/>
+                            <TextBlock Grid.Row="4" Grid.Column="1" Text="Ctrl+5" Foreground="Gray" Margin="0,2"/>
 
                             <TextBlock Grid.Row="5" Grid.Column="0" Text="실행 취소" Foreground="{StaticResource TextBrush}" Margin="0,2"/>
                             <TextBlock Grid.Row="5" Grid.Column="1" Text="Ctrl+Z" Foreground="Gray" Margin="0,2"/>
 
                             <TextBlock Grid.Row="6" Grid.Column="0" Text="그리기 지우기" Foreground="{StaticResource TextBrush}" Margin="0,2"/>
-                            <TextBlock Grid.Row="6" Grid.Column="1" Text="Ctrl+Shift+C" Foreground="Gray" Margin="0,2"/>
+                            <TextBlock Grid.Row="6" Grid.Column="1" Text="E" Foreground="Gray" Margin="0,2"/>
 
                             <TextBlock Grid.Row="7" Grid.Column="0" Text="현재 모드 종료" Foreground="{StaticResource TextBrush}" Margin="0,2"/>
                             <TextBlock Grid.Row="7" Grid.Column="1" Text="ESC" Foreground="Gray" Margin="0,2"/>

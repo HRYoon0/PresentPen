@@ -28,23 +28,21 @@ namespace PresentPen.Services
         private const uint MOD_SHIFT = 0x0004;
         private const uint MOD_WIN = 0x0008;
 
-        // 가상 키 코드
-        private const uint VK_Z = 0x5A;  // Z
-        private const uint VK_D = 0x44;  // D
-        private const uint VK_S = 0x53;  // S
-        private const uint VK_T = 0x54;  // T
-        private const uint VK_H = 0x48;  // H
-        private const uint VK_C = 0x43;  // C
+        // 가상 키 코드 (ZoomIt 호환)
+        private const uint VK_1 = 0x31;  // 1
+        private const uint VK_2 = 0x32;  // 2
+        private const uint VK_3 = 0x33;  // 3
+        private const uint VK_4 = 0x34;  // 4
+        private const uint VK_5 = 0x35;  // 5
         private const uint VK_ESCAPE = 0x1B;
 
-        // 핫키 ID
-        private const int HOTKEY_ZOOM = 1;
-        private const int HOTKEY_DRAW = 2;
-        private const int HOTKEY_SPOTLIGHT = 3;
-        private const int HOTKEY_TIMER = 4;
-        private const int HOTKEY_HIGHLIGHT = 5;
-        private const int HOTKEY_CLEAR = 6;
-        private const int HOTKEY_ESCAPE = 7;
+        // 핫키 ID (ZoomIt 호환: Ctrl+1~5)
+        private const int HOTKEY_ZOOM = 1;       // Ctrl+1: 줌
+        private const int HOTKEY_DRAW = 2;       // Ctrl+2: 그리기
+        private const int HOTKEY_TIMER = 3;      // Ctrl+3: 타이머
+        private const int HOTKEY_SPOTLIGHT = 4;  // Ctrl+4: 스포트라이트
+        private const int HOTKEY_HIGHLIGHT = 5;  // Ctrl+5: 커서 하이라이트
+        private const int HOTKEY_ESCAPE = 6;
 
         private const int WM_HOTKEY = 0x0312;
 
@@ -73,23 +71,20 @@ namespace PresentPen.Services
 
         private void RegisterHotkeys()
         {
-            // Ctrl+Shift+Z: 줌 토글
-            RegisterHotKey(_windowHandle, HOTKEY_ZOOM, MOD_CTRL | MOD_SHIFT, VK_Z);
+            // Ctrl+1: 줌 모드 (ZoomIt 동일)
+            RegisterHotKey(_windowHandle, HOTKEY_ZOOM, MOD_CTRL, VK_1);
 
-            // Ctrl+Shift+D: 그리기 토글
-            RegisterHotKey(_windowHandle, HOTKEY_DRAW, MOD_CTRL | MOD_SHIFT, VK_D);
+            // Ctrl+2: 그리기 모드 (ZoomIt 동일)
+            RegisterHotKey(_windowHandle, HOTKEY_DRAW, MOD_CTRL, VK_2);
 
-            // Ctrl+Shift+S: 스포트라이트 토글
-            RegisterHotKey(_windowHandle, HOTKEY_SPOTLIGHT, MOD_CTRL | MOD_SHIFT, VK_S);
+            // Ctrl+3: 타이머 (ZoomIt 동일)
+            RegisterHotKey(_windowHandle, HOTKEY_TIMER, MOD_CTRL, VK_3);
 
-            // Ctrl+Shift+T: 타이머 토글
-            RegisterHotKey(_windowHandle, HOTKEY_TIMER, MOD_CTRL | MOD_SHIFT, VK_T);
+            // Ctrl+4: 스포트라이트 (ZoomIt LiveZoom 위치)
+            RegisterHotKey(_windowHandle, HOTKEY_SPOTLIGHT, MOD_CTRL, VK_4);
 
-            // Ctrl+Shift+H: 커서 하이라이트 토글
-            RegisterHotKey(_windowHandle, HOTKEY_HIGHLIGHT, MOD_CTRL | MOD_SHIFT, VK_H);
-
-            // Ctrl+Shift+C: 그리기 지우기
-            RegisterHotKey(_windowHandle, HOTKEY_CLEAR, MOD_CTRL | MOD_SHIFT, VK_C);
+            // Ctrl+5: 커서 하이라이트
+            RegisterHotKey(_windowHandle, HOTKEY_HIGHLIGHT, MOD_CTRL, VK_5);
 
             // ESC: 현재 모드 종료
             RegisterHotKey(_windowHandle, HOTKEY_ESCAPE, MOD_NONE, VK_ESCAPE);
@@ -110,17 +105,14 @@ namespace PresentPen.Services
                     case HOTKEY_DRAW:
                         HotkeyPressed?.Invoke(AppMode.Draw);
                         break;
-                    case HOTKEY_SPOTLIGHT:
-                        HotkeyPressed?.Invoke(AppMode.Spotlight);
-                        break;
                     case HOTKEY_TIMER:
                         HotkeyPressed?.Invoke(AppMode.Timer);
                         break;
+                    case HOTKEY_SPOTLIGHT:
+                        HotkeyPressed?.Invoke(AppMode.Spotlight);
+                        break;
                     case HOTKEY_HIGHLIGHT:
                         AppState.Instance.IsCursorHighlightEnabled = !AppState.Instance.IsCursorHighlightEnabled;
-                        break;
-                    case HOTKEY_CLEAR:
-                        ClearRequested?.Invoke();
                         break;
                     case HOTKEY_ESCAPE:
                         EscapePressed?.Invoke();
@@ -137,10 +129,9 @@ namespace PresentPen.Services
 
             UnregisterHotKey(_windowHandle, HOTKEY_ZOOM);
             UnregisterHotKey(_windowHandle, HOTKEY_DRAW);
-            UnregisterHotKey(_windowHandle, HOTKEY_SPOTLIGHT);
             UnregisterHotKey(_windowHandle, HOTKEY_TIMER);
+            UnregisterHotKey(_windowHandle, HOTKEY_SPOTLIGHT);
             UnregisterHotKey(_windowHandle, HOTKEY_HIGHLIGHT);
-            UnregisterHotKey(_windowHandle, HOTKEY_CLEAR);
             UnregisterHotKey(_windowHandle, HOTKEY_ESCAPE);
 
             _source?.RemoveHook(HwndHook);
