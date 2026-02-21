@@ -12,11 +12,11 @@
 
     <Grid>
         <!-- 배경 (투명/화이트보드/칠판) -->
-        <Rectangle x:Name="BackgroundRect" Fill="Transparent"/>
+        <Rectangle x:Name="BackgroundRect" Fill="#01000000"/>
 
         <!-- 커스텀 그리기 캔버스 -->
         <Canvas x:Name="DrawCanvas"
-                Background="Transparent"
+                Background="#01000000"
                 MouseLeftButtonDown="Canvas_MouseLeftButtonDown"
                 MouseMove="Canvas_MouseMove"
                 MouseLeftButtonUp="Canvas_MouseLeftButtonUp"/>

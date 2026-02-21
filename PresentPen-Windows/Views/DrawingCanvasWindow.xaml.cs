@@ -96,7 +96,7 @@ namespace PresentPen.Views
             {
                 case "Transparent":
                     AppState.Instance.BackgroundMode = BackgroundMode.Transparent;
-                    BackgroundRect.Fill = Brushes.Transparent;
+                    BackgroundRect.Fill = new SolidColorBrush(Color.FromArgb(1, 0, 0, 0));
                     break;
                 case "Whiteboard":
                     AppState.Instance.BackgroundMode = BackgroundMode.Whiteboard;
@@ -376,7 +376,7 @@ namespace PresentPen.Views
             DrawCanvas.Children.Clear();
             _undoStack.Clear();
             AppState.Instance.BackgroundMode = BackgroundMode.Transparent;
-            BackgroundRect.Fill = Brushes.Transparent;
+            BackgroundRect.Fill = new SolidColorBrush(Color.FromArgb(1, 0, 0, 0));
         }
 
         // === 키보드 입력 (macOS 동일 단축키) ===

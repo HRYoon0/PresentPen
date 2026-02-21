@@ -3,107 +3,198 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:tb="http://www.hardcodet.net/taskbar"
         Title="PresentPen"
-        Width="380" Height="480"
+        Width="360" Height="620"
         WindowStartupLocation="CenterScreen"
         ResizeMode="NoResize"
-        Background="{StaticResource BackgroundBrush}">
+        WindowStyle="None"
+        AllowsTransparency="True"
+        Background="Transparent"
+        MouseLeftButtonDown="Window_MouseLeftButtonDown">
 
-    <Grid Margin="24">
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="Auto"/>
-        </Grid.RowDefinitions>
+    <Border Background="{StaticResource BackgroundBrush}"
+            CornerRadius="16"
+            BorderBrush="#2A2A50"
+            BorderThickness="1">
+        <Grid Margin="28,24,28,20">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
 
-        <!-- 제목 -->
-        <StackPanel Grid.Row="0" Margin="0,0,0,24">
-            <TextBlock Text="PresentPen"
-                      FontSize="28"
-                      FontWeight="Bold"
-                      Foreground="{StaticResource PrimaryBrush}"/>
-            <TextBlock Text="프레젠테이션 도구"
-                      FontSize="14"
-                      Foreground="Gray"
-                      Margin="0,4,0,0"/>
-        </StackPanel>
+            <!-- 헤더: 로고 + 닫기 -->
+            <Grid Grid.Row="0" Margin="0,0,0,20">
+                <StackPanel>
+                    <TextBlock FontSize="24" FontWeight="Bold" Foreground="White">
+                        <Run Text="Present" Foreground="{StaticResource PrimaryLightBrush}"/><Run Text="Pen"/>
+                    </TextBlock>
+                    <TextBlock Text="프레젠테이션 도구"
+                              FontSize="12"
+                              Foreground="{StaticResource TextDimBrush}"
+                              Margin="0,4,0,0"/>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal"
+                           HorizontalAlignment="Right"
+                           VerticalAlignment="Top">
+                    <Button Style="{StaticResource ActionButton}"
+                           Content="─"
+                           Width="32" Height="28"
+                           Padding="0"
+                           FontSize="14"
+                           Click="MinimizeButton_Click"/>
+                    <Button Style="{StaticResource DangerButton}"
+                           Content="✕"
+                           Width="32" Height="28"
+                           Padding="0"
+                           FontSize="12"
+                           Margin="4,0,0,0"
+                           Click="ExitButton_Click"/>
+                </StackPanel>
+            </Grid>
 
-        <!-- 현재 상태 -->
-        <Border Grid.Row="1"
-               Background="{StaticResource SurfaceBrush}"
-               CornerRadius="8"
-               Padding="16"
-               Margin="0,0,0,16">
-            <StackPanel>
-                <TextBlock Text="현재 상태"
-                          FontSize="12"
-                          Foreground="Gray"
-                          Margin="0,0,0,8"/>
-                <TextBlock x:Name="StatusText"
-                          Text="대기 중"
-                          FontSize="18"
-                          FontWeight="SemiBold"
-                          Foreground="{StaticResource TextBrush}"/>
+            <!-- 상태 카드 -->
+            <Border Grid.Row="1"
+                   CornerRadius="12"
+                   Padding="16,12"
+                   Margin="0,0,0,20">
+                <Border.Background>
+                    <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                        <GradientStop Color="#2A2A50" Offset="0"/>
+                        <GradientStop Color="#1A1A35" Offset="1"/>
+                    </LinearGradientBrush>
+                </Border.Background>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <Ellipse Grid.Column="0"
+                            Width="8" Height="8"
+                            Fill="{StaticResource AccentBrush}"
+                            VerticalAlignment="Center"
+                            Margin="0,0,12,0"/>
+                    <StackPanel Grid.Column="1">
+                        <TextBlock Text="상태"
+                                  FontSize="10"
+                                  Foreground="{StaticResource TextDimBrush}"
+                                  Margin="0,0,0,2"/>
+                        <TextBlock x:Name="StatusText"
+                                  Text="대기 중"
+                                  FontSize="16"
+                                  FontWeight="SemiBold"
+                                  Foreground="White"/>
+                    </StackPanel>
+                </Grid>
+            </Border>
+
+            <!-- 기능 버튼들 -->
+            <StackPanel Grid.Row="2" Margin="0,0,0,8">
+                <Button Style="{StaticResource PrimaryButton}"
+                       Margin="0,3"
+                       Click="ZoomButton_Click">
+                    <Grid Width="260">
+                        <TextBlock HorizontalAlignment="Left" VerticalAlignment="Center">
+                            <Run Text="🔍 " FontSize="16"/>
+                            <Run Text="화면 확대" FontSize="14"/>
+                        </TextBlock>
+                        <TextBlock Text="Ctrl+1"
+                                  HorizontalAlignment="Right"
+                                  VerticalAlignment="Center"
+                                  FontSize="11"
+                                  Foreground="{StaticResource TextDimBrush}"/>
+                    </Grid>
+                </Button>
+
+                <Button Style="{StaticResource PrimaryButton}"
+                       Margin="0,3"
+                       Click="DrawButton_Click">
+                    <Grid Width="260">
+                        <TextBlock HorizontalAlignment="Left" VerticalAlignment="Center">
+                            <Run Text="✏️ " FontSize="16"/>
+                            <Run Text="그리기" FontSize="14"/>
+                        </TextBlock>
+                        <TextBlock Text="Ctrl+2"
+                                  HorizontalAlignment="Right"
+                                  VerticalAlignment="Center"
+                                  FontSize="11"
+                                  Foreground="{StaticResource TextDimBrush}"/>
+                    </Grid>
+                </Button>
+
+                <Button Style="{StaticResource PrimaryButton}"
+                       Margin="0,3"
+                       Click="TimerButton_Click">
+                    <Grid Width="260">
+                        <TextBlock HorizontalAlignment="Left" VerticalAlignment="Center">
+                            <Run Text="⏱️ " FontSize="16"/>
+                            <Run Text="타이머" FontSize="14"/>
+                        </TextBlock>
+                        <TextBlock Text="Ctrl+3"
+                                  HorizontalAlignment="Right"
+                                  VerticalAlignment="Center"
+                                  FontSize="11"
+                                  Foreground="{StaticResource TextDimBrush}"/>
+                    </Grid>
+                </Button>
+
+                <Button Style="{StaticResource PrimaryButton}"
+                       Margin="0,3"
+                       Click="SpotlightButton_Click">
+                    <Grid Width="260">
+                        <TextBlock HorizontalAlignment="Left" VerticalAlignment="Center">
+                            <Run Text="💡 " FontSize="16"/>
+                            <Run Text="스포트라이트" FontSize="14"/>
+                        </TextBlock>
+                        <TextBlock Text="Ctrl+4"
+                                  HorizontalAlignment="Right"
+                                  VerticalAlignment="Center"
+                                  FontSize="11"
+                                  Foreground="{StaticResource TextDimBrush}"/>
+                    </Grid>
+                </Button>
+
+                <Button Style="{StaticResource PrimaryButton}"
+                       Margin="0,3"
+                       Click="HighlightButton_Click">
+                    <Grid Width="260">
+                        <TextBlock HorizontalAlignment="Left" VerticalAlignment="Center">
+                            <Run Text="✨ " FontSize="16"/>
+                            <Run Text="커서 하이라이트" FontSize="14"/>
+                        </TextBlock>
+                        <TextBlock Text="Ctrl+5"
+                                  HorizontalAlignment="Right"
+                                  VerticalAlignment="Center"
+                                  FontSize="11"
+                                  Foreground="{StaticResource TextDimBrush}"/>
+                    </Grid>
+                </Button>
             </StackPanel>
-        </Border>
 
-        <!-- 기능 버튼들 -->
-        <StackPanel Grid.Row="2">
-            <Button Content="🔍  화면 확대 (Ctrl+1)"
-                   Style="{StaticResource PrimaryButton}"
-                   Margin="0,4"
-                   Click="ZoomButton_Click"/>
-            <Button Content="✏️  그리기 (Ctrl+2)"
-                   Style="{StaticResource PrimaryButton}"
-                   Margin="0,4"
-                   Click="DrawButton_Click"/>
-            <Button Content="⏱️  타이머 (Ctrl+3)"
-                   Style="{StaticResource PrimaryButton}"
-                   Margin="0,4"
-                   Click="TimerButton_Click"/>
-            <Button Content="💡  스포트라이트 (Ctrl+4)"
-                   Style="{StaticResource PrimaryButton}"
-                   Margin="0,4"
-                   Click="SpotlightButton_Click"/>
-            <Button Content="✨  커서 하이라이트 (Ctrl+5)"
-                   Style="{StaticResource PrimaryButton}"
-                   Margin="0,4"
-                   Click="HighlightButton_Click"/>
-        </StackPanel>
+            <!-- 구분선 -->
+            <Rectangle Grid.Row="3"
+                      Height="1"
+                      Fill="#222240"
+                      Margin="0,8,0,12"/>
 
-        <!-- 하단 버튼 -->
-        <StackPanel Grid.Row="3"
-                   Orientation="Horizontal"
-                   HorizontalAlignment="Center"
-                   Margin="0,16,0,0">
-            <Button Content="도움말"
-                   Width="80"
-                   Margin="4,0"
-                   Click="HelpButton_Click"
-                   Background="#2196F3"
-                   Foreground="White"
-                   Padding="8,6"/>
-            <Button Content="설정"
-                   Width="80"
-                   Margin="4,0"
-                   Click="SettingsButton_Click"
-                   Background="#333"
-                   Foreground="White"
-                   Padding="8,6"/>
-            <Button Content="최소화"
-                   Width="80"
-                   Margin="4,0"
-                   Click="MinimizeButton_Click"
-                   Background="#333"
-                   Foreground="White"
-                   Padding="8,6"/>
-            <Button Content="종료"
-                   Width="80"
-                   Margin="4,0"
-                   Click="ExitButton_Click"
-                   Background="#F44336"
-                   Foreground="White"
-                   Padding="8,6"/>
-        </StackPanel>
-    </Grid>
+            <!-- 하단 버튼 -->
+            <Grid Grid.Row="4">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Button Grid.Column="0"
+                       Style="{StaticResource ActionButton}"
+                       Content="📖  도움말"
+                       Margin="0,0,4,0"
+                       Click="HelpButton_Click"/>
+                <Button Grid.Column="1"
+                       Style="{StaticResource ActionButton}"
+                       Content="⚙️  설정"
+                       Margin="4,0,0,0"
+                       Click="SettingsButton_Click"/>
+            </Grid>
+        </Grid>
+    </Border>
 </Window>

@@ -1,4 +1,5 @@
 using System.Windows;
+using System.Windows.Input;
 using PresentPen.Models;
 using PresentPen.Services;
 
@@ -223,6 +224,13 @@ namespace PresentPen.Views
             var settingsWindow = new SettingsWindow();
             settingsWindow.Owner = this;
             settingsWindow.ShowDialog();
+        }
+
+        // 커스텀 타이틀바 드래그 이동
+        private void Window_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            if (e.ChangedButton == MouseButton.Left)
+                DragMove();
         }
 
         private void MinimizeButton_Click(object sender, RoutedEventArgs e)
