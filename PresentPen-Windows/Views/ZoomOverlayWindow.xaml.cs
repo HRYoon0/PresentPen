@@ -409,8 +409,7 @@ namespace PresentPen.Views
             {
                 case Key.Escape:
                     e.Handled = true;
-                    Dispatcher.BeginInvoke(() =>
-                        (Application.Current.MainWindow as MainWindow)?.CloseAllFromOverlay());
+                    CloseAfterKeyRelease();
                     break;
 
                 // Ctrl+Z: 실행 취소
@@ -528,6 +527,20 @@ namespace PresentPen.Views
             if (_isCursorHighlightEnabled) features.Add("커서");
             if (_isSpotlightEnabled) features.Add("스포트라이트");
             ZoomLevelText.Text = string.Join(" | ", features);
+        }
+
+        private void CloseAfterKeyRelease()
+        {
+            var timer = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(50) };
+            timer.Tick += (s, args) =>
+            {
+                if (!Keyboard.IsKeyDown(Key.Escape))
+                {
+                    timer.Stop();
+                    (Application.Current.MainWindow as MainWindow)?.CloseAllFromOverlay();
+                }
+            };
+            timer.Start();
         }
 
         protected override void OnClosed(EventArgs e)

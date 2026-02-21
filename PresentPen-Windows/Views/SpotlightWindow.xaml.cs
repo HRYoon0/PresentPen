@@ -160,8 +160,7 @@ namespace PresentPen.Views
             if (e.Key == Key.Escape)
             {
                 e.Handled = true;
-                Dispatcher.BeginInvoke(() =>
-                    (Application.Current.MainWindow as MainWindow)?.CloseAllFromOverlay());
+                CloseAfterKeyRelease();
             }
             else if (e.Key == Key.Space)
             {
@@ -176,6 +175,20 @@ namespace PresentPen.Views
 
                 UpdateZoomStatus();
             }
+        }
+
+        private void CloseAfterKeyRelease()
+        {
+            var timer = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(50) };
+            timer.Tick += (s, args) =>
+            {
+                if (!Keyboard.IsKeyDown(Key.Escape))
+                {
+                    timer.Stop();
+                    (Application.Current.MainWindow as MainWindow)?.CloseAllFromOverlay();
+                }
+            };
+            timer.Start();
         }
 
         protected override void OnClosed(EventArgs e)
