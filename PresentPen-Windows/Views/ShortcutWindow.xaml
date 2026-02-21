@@ -1,0 +1,293 @@
+<Window x:Class="PresentPen.Views.ShortcutWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="단축키 안내"
+        Width="520" Height="680"
+        WindowStartupLocation="CenterOwner"
+        ResizeMode="NoResize"
+        WindowStyle="None"
+        AllowsTransparency="True"
+        Background="Transparent">
+
+    <Border Background="#0F0F1A"
+            CornerRadius="16"
+            BorderBrush="#2A2A50"
+            BorderThickness="1">
+        <Grid Margin="24,20">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+
+            <!-- 헤더 -->
+            <Grid Grid.Row="0" Margin="0,0,0,16">
+                <TextBlock Text="⌨️  단축키 안내"
+                          FontSize="20"
+                          FontWeight="Bold"
+                          Foreground="White"/>
+                <Button Content="✕"
+                       HorizontalAlignment="Right"
+                       VerticalAlignment="Top"
+                       Width="32" Height="28"
+                       Padding="0"
+                       FontSize="12"
+                       Foreground="#FF6B6B"
+                       Background="Transparent"
+                       BorderThickness="0"
+                       Cursor="Hand"
+                       Click="CloseButton_Click"/>
+            </Grid>
+
+            <!-- 스크롤 영역 -->
+            <ScrollViewer Grid.Row="1"
+                         VerticalScrollBarVisibility="Auto"
+                         HorizontalScrollBarVisibility="Disabled">
+                <StackPanel>
+
+                    <!-- 모드 전환 -->
+                    <Border Background="#1A1A2E" CornerRadius="10" Padding="16,12" Margin="0,0,0,10">
+                        <StackPanel>
+                            <TextBlock Text="모드 전환" FontSize="14" FontWeight="Bold" Foreground="#A29BFE" Margin="0,0,0,10"/>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="140"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="26"/>
+                                    <RowDefinition Height="26"/>
+                                    <RowDefinition Height="26"/>
+                                    <RowDefinition Height="26"/>
+                                    <RowDefinition Height="26"/>
+                                    <RowDefinition Height="26"/>
+                                </Grid.RowDefinitions>
+
+                                <TextBlock Grid.Row="0" Grid.Column="0" Text="Ctrl + 1" Foreground="#00CEC9" FontFamily="Consolas" FontSize="13"/>
+                                <TextBlock Grid.Row="0" Grid.Column="1" Text="화면 확대 (줌)" Foreground="#CCCCDD" FontSize="13"/>
+
+                                <TextBlock Grid.Row="1" Grid.Column="0" Text="Ctrl + 2" Foreground="#00CEC9" FontFamily="Consolas" FontSize="13"/>
+                                <TextBlock Grid.Row="1" Grid.Column="1" Text="그리기 모드" Foreground="#CCCCDD" FontSize="13"/>
+
+                                <TextBlock Grid.Row="2" Grid.Column="0" Text="Ctrl + 3" Foreground="#00CEC9" FontFamily="Consolas" FontSize="13"/>
+                                <TextBlock Grid.Row="2" Grid.Column="1" Text="타이머" Foreground="#CCCCDD" FontSize="13"/>
+
+                                <TextBlock Grid.Row="3" Grid.Column="0" Text="Ctrl + 4" Foreground="#00CEC9" FontFamily="Consolas" FontSize="13"/>
+                                <TextBlock Grid.Row="3" Grid.Column="1" Text="스포트라이트" Foreground="#CCCCDD" FontSize="13"/>
+
+                                <TextBlock Grid.Row="4" Grid.Column="0" Text="Ctrl + 5" Foreground="#00CEC9" FontFamily="Consolas" FontSize="13"/>
+                                <TextBlock Grid.Row="4" Grid.Column="1" Text="커서 하이라이트" Foreground="#CCCCDD" FontSize="13"/>
+
+                                <TextBlock Grid.Row="5" Grid.Column="0" Text="ESC" Foreground="#00CEC9" FontFamily="Consolas" FontSize="13"/>
+                                <TextBlock Grid.Row="5" Grid.Column="1" Text="모든 기능 종료" Foreground="#CCCCDD" FontSize="13"/>
+                            </Grid>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- 그리기 모드 -->
+                    <Border Background="#1A1A2E" CornerRadius="10" Padding="16,12" Margin="0,0,0,10">
+                        <StackPanel>
+                            <TextBlock Text="그리기 모드 (Ctrl+2)" FontSize="14" FontWeight="Bold" Foreground="#A29BFE" Margin="0,0,0,10"/>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="140"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="26"/>
+                                    <RowDefinition Height="26"/>
+                                    <RowDefinition Height="26"/>
+                                    <RowDefinition Height="26"/>
+                                    <RowDefinition Height="26"/>
+                                    <RowDefinition Height="26"/>
+                                    <RowDefinition Height="26"/>
+                                    <RowDefinition Height="26"/>
+                                    <RowDefinition Height="26"/>
+                                    <RowDefinition Height="26"/>
+                                    <RowDefinition Height="26"/>
+                                    <RowDefinition Height="26"/>
+                                    <RowDefinition Height="26"/>
+                                </Grid.RowDefinitions>
+
+                                <TextBlock Grid.Row="0" Grid.Column="0" Text="R / G / B" Foreground="#00CEC9" FontFamily="Consolas" FontSize="13"/>
+                                <TextBlock Grid.Row="0" Grid.Column="1" Text="빨강 / 초록 / 파랑" Foreground="#CCCCDD" FontSize="13"/>
+
+                                <TextBlock Grid.Row="1" Grid.Column="0" Text="Y / O / P" Foreground="#00CEC9" FontFamily="Consolas" FontSize="13"/>
+                                <TextBlock Grid.Row="1" Grid.Column="1" Text="노랑 / 주황 / 분홍" Foreground="#CCCCDD" FontSize="13"/>
+
+                                <TextBlock Grid.Row="2" Grid.Column="0" Text="Shift + 색상키" Foreground="#00CEC9" FontFamily="Consolas" FontSize="13"/>
+                                <TextBlock Grid.Row="2" Grid.Column="1" Text="형광펜 모드" Foreground="#CCCCDD" FontSize="13"/>
+
+                                <TextBlock Grid.Row="3" Grid.Column="0" Text="Shift + 클릭" Foreground="#00CEC9" FontFamily="Consolas" FontSize="13"/>
+                                <TextBlock Grid.Row="3" Grid.Column="1" Text="직선 그리기" Foreground="#CCCCDD" FontSize="13"/>
+
+                                <TextBlock Grid.Row="4" Grid.Column="0" Text="Ctrl + 클릭" Foreground="#00CEC9" FontFamily="Consolas" FontSize="13"/>
+                                <TextBlock Grid.Row="4" Grid.Column="1" Text="사각형 그리기" Foreground="#CCCCDD" FontSize="13"/>
+
+                                <TextBlock Grid.Row="5" Grid.Column="0" Text="Ctrl+Shift+클릭" Foreground="#00CEC9" FontFamily="Consolas" FontSize="13"/>
+                                <TextBlock Grid.Row="5" Grid.Column="1" Text="화살표 그리기" Foreground="#CCCCDD" FontSize="13"/>
+
+                                <TextBlock Grid.Row="6" Grid.Column="0" Text="Tab" Foreground="#00CEC9" FontFamily="Consolas" FontSize="13"/>
+                                <TextBlock Grid.Row="6" Grid.Column="1" Text="원 도구 전환" Foreground="#CCCCDD" FontSize="13"/>
+
+                                <TextBlock Grid.Row="7" Grid.Column="0" Text="W" Foreground="#00CEC9" FontFamily="Consolas" FontSize="13"/>
+                                <TextBlock Grid.Row="7" Grid.Column="1" Text="화이트보드 토글" Foreground="#CCCCDD" FontSize="13"/>
+
+                                <TextBlock Grid.Row="8" Grid.Column="0" Text="K" Foreground="#00CEC9" FontFamily="Consolas" FontSize="13"/>
+                                <TextBlock Grid.Row="8" Grid.Column="1" Text="칠판(블랙보드) 토글" Foreground="#CCCCDD" FontSize="13"/>
+
+                                <TextBlock Grid.Row="9" Grid.Column="0" Text="E" Foreground="#00CEC9" FontFamily="Consolas" FontSize="13"/>
+                                <TextBlock Grid.Row="9" Grid.Column="1" Text="전체 지우기" Foreground="#CCCCDD" FontSize="13"/>
+
+                                <TextBlock Grid.Row="10" Grid.Column="0" Text="Ctrl + Z" Foreground="#00CEC9" FontFamily="Consolas" FontSize="13"/>
+                                <TextBlock Grid.Row="10" Grid.Column="1" Text="실행 취소" Foreground="#CCCCDD" FontSize="13"/>
+
+                                <TextBlock Grid.Row="11" Grid.Column="0" Text="마우스 스크롤" Foreground="#00CEC9" FontFamily="Consolas" FontSize="13"/>
+                                <TextBlock Grid.Row="11" Grid.Column="1" Text="선 굵기 조절" Foreground="#CCCCDD" FontSize="13"/>
+
+                                <TextBlock Grid.Row="12" Grid.Column="0" Text="ESC" Foreground="#00CEC9" FontFamily="Consolas" FontSize="13"/>
+                                <TextBlock Grid.Row="12" Grid.Column="1" Text="종료" Foreground="#CCCCDD" FontSize="13"/>
+                            </Grid>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- 화면 확대 (줌) -->
+                    <Border Background="#1A1A2E" CornerRadius="10" Padding="16,12" Margin="0,0,0,10">
+                        <StackPanel>
+                            <TextBlock Text="화면 확대 모드 (Ctrl+1)" FontSize="14" FontWeight="Bold" Foreground="#A29BFE" Margin="0,0,0,10"/>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="140"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="26"/>
+                                    <RowDefinition Height="26"/>
+                                    <RowDefinition Height="26"/>
+                                    <RowDefinition Height="26"/>
+                                    <RowDefinition Height="26"/>
+                                    <RowDefinition Height="26"/>
+                                    <RowDefinition Height="26"/>
+                                </Grid.RowDefinitions>
+
+                                <TextBlock Grid.Row="0" Grid.Column="0" Text="마우스 스크롤" Foreground="#00CEC9" FontFamily="Consolas" FontSize="13"/>
+                                <TextBlock Grid.Row="0" Grid.Column="1" Text="확대 / 축소" Foreground="#CCCCDD" FontSize="13"/>
+
+                                <TextBlock Grid.Row="1" Grid.Column="0" Text="Ctrl + 2" Foreground="#00CEC9" FontFamily="Consolas" FontSize="13"/>
+                                <TextBlock Grid.Row="1" Grid.Column="1" Text="줌 위에 그리기 토글 (화면 고정)" Foreground="#CCCCDD" FontSize="13"/>
+
+                                <TextBlock Grid.Row="2" Grid.Column="0" Text="Ctrl + 4" Foreground="#00CEC9" FontFamily="Consolas" FontSize="13"/>
+                                <TextBlock Grid.Row="2" Grid.Column="1" Text="줌 위에 스포트라이트 토글" Foreground="#CCCCDD" FontSize="13"/>
+
+                                <TextBlock Grid.Row="3" Grid.Column="0" Text="R / G / B / Y" Foreground="#00CEC9" FontFamily="Consolas" FontSize="13"/>
+                                <TextBlock Grid.Row="3" Grid.Column="1" Text="그리기 색상 변경 (그리기 활성 시)" Foreground="#CCCCDD" FontSize="13"/>
+
+                                <TextBlock Grid.Row="4" Grid.Column="0" Text="Ctrl + Z" Foreground="#00CEC9" FontFamily="Consolas" FontSize="13"/>
+                                <TextBlock Grid.Row="4" Grid.Column="1" Text="그리기 실행 취소" Foreground="#CCCCDD" FontSize="13"/>
+
+                                <TextBlock Grid.Row="5" Grid.Column="0" Text="E" Foreground="#00CEC9" FontFamily="Consolas" FontSize="13"/>
+                                <TextBlock Grid.Row="5" Grid.Column="1" Text="그리기 전체 지우기" Foreground="#CCCCDD" FontSize="13"/>
+
+                                <TextBlock Grid.Row="6" Grid.Column="0" Text="ESC" Foreground="#00CEC9" FontFamily="Consolas" FontSize="13"/>
+                                <TextBlock Grid.Row="6" Grid.Column="1" Text="종료" Foreground="#CCCCDD" FontSize="13"/>
+                            </Grid>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- 타이머 -->
+                    <Border Background="#1A1A2E" CornerRadius="10" Padding="16,12" Margin="0,0,0,10">
+                        <StackPanel>
+                            <TextBlock Text="타이머 (Ctrl+3)" FontSize="14" FontWeight="Bold" Foreground="#A29BFE" Margin="0,0,0,10"/>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="140"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="26"/>
+                                    <RowDefinition Height="26"/>
+                                    <RowDefinition Height="26"/>
+                                    <RowDefinition Height="26"/>
+                                    <RowDefinition Height="26"/>
+                                </Grid.RowDefinitions>
+
+                                <TextBlock Grid.Row="0" Grid.Column="0" Text="1 / 3 / 5 / 0" Foreground="#00CEC9" FontFamily="Consolas" FontSize="13"/>
+                                <TextBlock Grid.Row="0" Grid.Column="1" Text="프리셋 (1분 / 3분 / 5분 / 10분)" Foreground="#CCCCDD" FontSize="13"/>
+
+                                <TextBlock Grid.Row="1" Grid.Column="0" Text="↑ / ↓" Foreground="#00CEC9" FontFamily="Consolas" FontSize="13"/>
+                                <TextBlock Grid.Row="1" Grid.Column="1" Text="1분 단위 조절" Foreground="#CCCCDD" FontSize="13"/>
+
+                                <TextBlock Grid.Row="2" Grid.Column="0" Text="마우스 스크롤" Foreground="#00CEC9" FontFamily="Consolas" FontSize="13"/>
+                                <TextBlock Grid.Row="2" Grid.Column="1" Text="10초 단위 조절" Foreground="#CCCCDD" FontSize="13"/>
+
+                                <TextBlock Grid.Row="3" Grid.Column="0" Text="Space / Enter" Foreground="#00CEC9" FontFamily="Consolas" FontSize="13"/>
+                                <TextBlock Grid.Row="3" Grid.Column="1" Text="시작 / 일시정지 / 재개" Foreground="#CCCCDD" FontSize="13"/>
+
+                                <TextBlock Grid.Row="4" Grid.Column="0" Text="ESC" Foreground="#00CEC9" FontFamily="Consolas" FontSize="13"/>
+                                <TextBlock Grid.Row="4" Grid.Column="1" Text="종료" Foreground="#CCCCDD" FontSize="13"/>
+                            </Grid>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- 스포트라이트 -->
+                    <Border Background="#1A1A2E" CornerRadius="10" Padding="16,12" Margin="0,0,0,10">
+                        <StackPanel>
+                            <TextBlock Text="스포트라이트 (Ctrl+4)" FontSize="14" FontWeight="Bold" Foreground="#A29BFE" Margin="0,0,0,10"/>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="140"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="26"/>
+                                    <RowDefinition Height="26"/>
+                                    <RowDefinition Height="26"/>
+                                    <RowDefinition Height="26"/>
+                                </Grid.RowDefinitions>
+
+                                <TextBlock Grid.Row="0" Grid.Column="0" Text="마우스 스크롤" Foreground="#00CEC9" FontFamily="Consolas" FontSize="13"/>
+                                <TextBlock Grid.Row="0" Grid.Column="1" Text="스포트라이트 크기 조절" Foreground="#CCCCDD" FontSize="13"/>
+
+                                <TextBlock Grid.Row="1" Grid.Column="0" Text="Space" Foreground="#00CEC9" FontFamily="Consolas" FontSize="13"/>
+                                <TextBlock Grid.Row="1" Grid.Column="1" Text="줌(돋보기) 효과 토글" Foreground="#CCCCDD" FontSize="13"/>
+
+                                <TextBlock Grid.Row="2" Grid.Column="0" Text="Ctrl+Shift+4" Foreground="#00CEC9" FontFamily="Consolas" FontSize="13"/>
+                                <TextBlock Grid.Row="2" Grid.Column="1" Text="스포트라이트 줌 토글" Foreground="#CCCCDD" FontSize="13"/>
+
+                                <TextBlock Grid.Row="3" Grid.Column="0" Text="ESC" Foreground="#00CEC9" FontFamily="Consolas" FontSize="13"/>
+                                <TextBlock Grid.Row="3" Grid.Column="1" Text="종료" Foreground="#CCCCDD" FontSize="13"/>
+                            </Grid>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- 커서 하이라이트 -->
+                    <Border Background="#1A1A2E" CornerRadius="10" Padding="16,12" Margin="0,0,0,4">
+                        <StackPanel>
+                            <TextBlock Text="커서 하이라이트 (Ctrl+5)" FontSize="14" FontWeight="Bold" Foreground="#A29BFE" Margin="0,0,0,10"/>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="140"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="26"/>
+                                    <RowDefinition Height="26"/>
+                                    <RowDefinition Height="26"/>
+                                </Grid.RowDefinitions>
+
+                                <TextBlock Grid.Row="0" Grid.Column="0" Text="Ctrl+Shift+5" Foreground="#00CEC9" FontFamily="Consolas" FontSize="13"/>
+                                <TextBlock Grid.Row="0" Grid.Column="1" Text="스타일 순환 (링/헤일로/채움/스퀴클)" Foreground="#CCCCDD" FontSize="13"/>
+
+                                <TextBlock Grid.Row="1" Grid.Column="0" Text="Ctrl+Alt+5" Foreground="#00CEC9" FontFamily="Consolas" FontSize="13"/>
+                                <TextBlock Grid.Row="1" Grid.Column="1" Text="색상 순환 (9가지)" Foreground="#CCCCDD" FontSize="13"/>
+
+                                <TextBlock Grid.Row="2" Grid.Column="0" Text="ESC" Foreground="#00CEC9" FontFamily="Consolas" FontSize="13"/>
+                                <TextBlock Grid.Row="2" Grid.Column="1" Text="종료" Foreground="#CCCCDD" FontSize="13"/>
+                            </Grid>
+                        </StackPanel>
+                    </Border>
+
+                </StackPanel>
+            </ScrollViewer>
+        </Grid>
+    </Border>
+</Window>

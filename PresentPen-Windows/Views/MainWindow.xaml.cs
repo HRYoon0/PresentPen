@@ -268,6 +268,13 @@ namespace PresentPen.Views
             AppState.Instance.IsCursorHighlightEnabled = !AppState.Instance.IsCursorHighlightEnabled;
         }
 
+        private void ShortcutButton_Click(object sender, RoutedEventArgs e)
+        {
+            var shortcutWindow = new ShortcutWindow();
+            shortcutWindow.Owner = this;
+            shortcutWindow.ShowDialog();
+        }
+
         private void HelpButton_Click(object sender, RoutedEventArgs e)
         {
             var helpWindow = new HelpWindow();
