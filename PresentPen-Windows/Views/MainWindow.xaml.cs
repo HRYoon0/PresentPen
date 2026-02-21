@@ -26,7 +26,6 @@ namespace PresentPen.Views
             var hotkeyManager = HotkeyManager.Instance;
             hotkeyManager.Initialize(this);
             hotkeyManager.HotkeyPressed += OnHotkeyPressed;
-            hotkeyManager.EscapePressed += OnEscapePressed;
         }
 
         private void OnAppStateChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
@@ -36,13 +35,11 @@ namespace PresentPen.Views
                 if (e.PropertyName == nameof(AppState.CurrentMode))
                 {
                     UpdateStatusText();
-                    UpdateEscapeHotkey();
                 }
                 else if (e.PropertyName == nameof(AppState.IsCursorHighlightEnabled))
                 {
                     ToggleCursorHighlight();
                     UpdateStatusText();
-                    UpdateEscapeHotkey();
                 }
             });
         }
@@ -71,20 +68,6 @@ namespace PresentPen.Views
                 StatusText.Text = "대기 중";
         }
 
-        /// <summary>
-        /// 기능이 하나라도 활성화되어 있으면 ESC 핫키 등록, 아니면 해제
-        /// </summary>
-        private void UpdateEscapeHotkey()
-        {
-            bool anyActive = AppState.Instance.CurrentMode != AppMode.None
-                          || AppState.Instance.IsCursorHighlightEnabled;
-
-            if (anyActive)
-                HotkeyManager.Instance.RegisterEscapeHotkey();
-            else
-                HotkeyManager.Instance.UnregisterEscapeHotkey();
-        }
-
         private void OnHotkeyPressed(AppMode mode)
         {
             Dispatcher.Invoke(() =>
@@ -101,7 +84,6 @@ namespace PresentPen.Views
                             _zoomWindow.ToggleSpotlightOverlay();
                             return;
                         case AppMode.Timer:
-                            // 타이머는 줌과 별도로 동작
                             ToggleTimer();
                             return;
                     }
@@ -126,12 +108,12 @@ namespace PresentPen.Views
             });
         }
 
-        private void OnEscapePressed()
+        /// <summary>
+        /// 오버레이 윈도우에서 ESC를 눌렀을 때 호출 (모든 기능 해제)
+        /// </summary>
+        public void CloseAllFromOverlay()
         {
-            Dispatcher.Invoke(() =>
-            {
-                CloseAllOverlays();
-            });
+            Dispatcher.Invoke(() => CloseAllOverlays());
         }
 
         private void ToggleZoom()
@@ -143,7 +125,6 @@ namespace PresentPen.Views
             }
             else
             {
-                // 줌은 그리기/스포트라이트를 닫고 시작 (줌 내부에서 조합 가능)
                 _drawingWindow?.Close();
                 _drawingWindow = null;
                 if (_spotlightWindow != null)
@@ -169,7 +150,6 @@ namespace PresentPen.Views
             }
             else
             {
-                // 줌/스포트라이트 닫기
                 _zoomWindow?.Close();
                 _zoomWindow = null;
                 if (_spotlightWindow != null)
@@ -196,7 +176,6 @@ namespace PresentPen.Views
             }
             else
             {
-                // 줌/그리기 닫기
                 _zoomWindow?.Close();
                 _zoomWindow = null;
                 _drawingWindow?.Close();
@@ -226,7 +205,6 @@ namespace PresentPen.Views
                 _timerWindow = new TimerWindow();
                 _timerWindow.Closed += (s, e) => _timerWindow = null;
                 _timerWindow.Show();
-                // 타이머는 다른 모드와 독립적이므로, 다른 모드가 없을 때만 상태 변경
                 if (AppState.Instance.CurrentMode == AppMode.None)
                     AppState.Instance.CurrentMode = AppMode.Timer;
             }
@@ -304,7 +282,6 @@ namespace PresentPen.Views
             settingsWindow.ShowDialog();
         }
 
-        // 커스텀 타이틀바 드래그 이동
         private void Window_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             if (e.ChangedButton == MouseButton.Left)

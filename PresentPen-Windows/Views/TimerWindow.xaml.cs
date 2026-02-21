@@ -108,7 +108,7 @@ namespace PresentPen.Views
             switch (e.Key)
             {
                 case Key.Escape:
-                    Close();
+                    (Application.Current.MainWindow as MainWindow)?.CloseAllFromOverlay();
                     break;
 
                 case Key.Space:

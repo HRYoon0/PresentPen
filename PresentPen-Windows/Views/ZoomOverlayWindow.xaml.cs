@@ -55,6 +55,13 @@ namespace PresentPen.Views
             _isDrawingEnabled = !_isDrawingEnabled;
             DrawOverlay.Visibility = _isDrawingEnabled ? Visibility.Visible : Visibility.Collapsed;
             Cursor = _isDrawingEnabled ? Cursors.Pen : Cursors.Cross;
+
+            // 그리기 활성화 시 줌 위치 고정 (화면 멈춤)
+            if (_isDrawingEnabled)
+                _updateTimer.Stop();
+            else
+                _updateTimer.Start();
+
             UpdateStatusText();
         }
 
@@ -210,7 +217,7 @@ namespace PresentPen.Views
             switch (e.Key)
             {
                 case Key.Escape:
-                    Close();
+                    (Application.Current.MainWindow as MainWindow)?.CloseAllFromOverlay();
                     break;
 
                 // Ctrl+Z: 줌 내 그리기 실행 취소

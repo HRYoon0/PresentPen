@@ -159,7 +159,7 @@ namespace PresentPen.Views
         {
             if (e.Key == Key.Escape)
             {
-                Close();
+                (Application.Current.MainWindow as MainWindow)?.CloseAllFromOverlay();
             }
             else if (e.Key == Key.Space)
             {

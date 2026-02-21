@@ -16,7 +16,6 @@ namespace PresentPen.Services
         [DllImport("user32.dll")]
         private static extern bool UnregisterHotKey(IntPtr hWnd, int id);
 
-        private const uint MOD_NONE = 0x0000;
         private const uint MOD_ALT = 0x0001;
         private const uint MOD_CTRL = 0x0002;
         private const uint MOD_SHIFT = 0x0004;
@@ -26,14 +25,12 @@ namespace PresentPen.Services
         private const uint VK_3 = 0x33;
         private const uint VK_4 = 0x34;
         private const uint VK_5 = 0x35;
-        private const uint VK_ESCAPE = 0x1B;
 
         private const int HOTKEY_ZOOM = 1;
         private const int HOTKEY_DRAW = 2;
         private const int HOTKEY_TIMER = 3;
         private const int HOTKEY_SPOTLIGHT = 4;
         private const int HOTKEY_HIGHLIGHT = 5;
-        private const int HOTKEY_ESCAPE = 6;
         private const int HOTKEY_STYLE_CYCLE = 7;
         private const int HOTKEY_COLOR_CYCLE = 8;
         private const int HOTKEY_SPOTLIGHT_ZOOM = 9;
@@ -43,10 +40,8 @@ namespace PresentPen.Services
         private IntPtr _windowHandle;
         private HwndSource? _source;
         private bool _disposed;
-        private bool _escapeRegistered;
 
         public event Action<AppMode>? HotkeyPressed;
-        public event Action? EscapePressed;
         public event Action? CursorStyleCycleRequested;
         public event Action? CursorColorCycleRequested;
         public event Action? SpotlightZoomToggleRequested;
@@ -65,41 +60,20 @@ namespace PresentPen.Services
 
         private void RegisterHotkeys()
         {
+            // Ctrl+1~5: 모드 전환
             RegisterHotKey(_windowHandle, HOTKEY_ZOOM, MOD_CTRL, VK_1);
             RegisterHotKey(_windowHandle, HOTKEY_DRAW, MOD_CTRL, VK_2);
             RegisterHotKey(_windowHandle, HOTKEY_TIMER, MOD_CTRL, VK_3);
             RegisterHotKey(_windowHandle, HOTKEY_SPOTLIGHT, MOD_CTRL, VK_4);
             RegisterHotKey(_windowHandle, HOTKEY_HIGHLIGHT, MOD_CTRL, VK_5);
 
+            // 조합 키
             RegisterHotKey(_windowHandle, HOTKEY_STYLE_CYCLE, MOD_CTRL | MOD_SHIFT, VK_5);
             RegisterHotKey(_windowHandle, HOTKEY_COLOR_CYCLE, MOD_CTRL | MOD_ALT, VK_5);
             RegisterHotKey(_windowHandle, HOTKEY_SPOTLIGHT_ZOOM, MOD_CTRL | MOD_SHIFT, VK_4);
 
-            // ESC는 기능이 활성화될 때만 등록
-        }
-
-        /// <summary>
-        /// 기능 활성화 시 ESC 핫키 등록
-        /// </summary>
-        public void RegisterEscapeHotkey()
-        {
-            if (!_escapeRegistered)
-            {
-                RegisterHotKey(_windowHandle, HOTKEY_ESCAPE, MOD_NONE, VK_ESCAPE);
-                _escapeRegistered = true;
-            }
-        }
-
-        /// <summary>
-        /// 모든 기능 비활성화 시 ESC 핫키 해제
-        /// </summary>
-        public void UnregisterEscapeHotkey()
-        {
-            if (_escapeRegistered)
-            {
-                UnregisterHotKey(_windowHandle, HOTKEY_ESCAPE);
-                _escapeRegistered = false;
-            }
+            // ESC는 전역 핫키로 등록하지 않음 (다른 앱에 영향 방지)
+            // 각 오버레이 윈도우가 자체 KeyDown에서 ESC 처리
         }
 
         private IntPtr HwndHook(IntPtr hwnd, int msg, IntPtr wParam, IntPtr lParam, ref bool handled)
@@ -137,9 +111,6 @@ namespace PresentPen.Services
                     case HOTKEY_SPOTLIGHT_ZOOM:
                         AppState.Instance.SpotlightZoomEnabled = !AppState.Instance.SpotlightZoomEnabled;
                         SpotlightZoomToggleRequested?.Invoke();
-                        break;
-                    case HOTKEY_ESCAPE:
-                        EscapePressed?.Invoke();
                         break;
                 }
             }
