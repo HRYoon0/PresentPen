@@ -29,6 +29,7 @@
 
         <!-- 그리기 오버레이 (줌 내부) -->
         <Canvas x:Name="DrawOverlay" Visibility="Collapsed"
+                Background="#01000000"
                 MouseLeftButtonDown="DrawOverlay_MouseLeftButtonDown"
                 MouseMove="DrawOverlay_MouseMove"
                 MouseLeftButtonUp="DrawOverlay_MouseLeftButtonUp"/>

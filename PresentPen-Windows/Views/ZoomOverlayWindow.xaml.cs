@@ -49,6 +49,29 @@ namespace PresentPen.Views
             hideTimer.Start();
         }
 
+        // === 외부에서 호출 가능한 기능 토글 ===
+        public void ToggleDrawingOverlay()
+        {
+            _isDrawingEnabled = !_isDrawingEnabled;
+            DrawOverlay.Visibility = _isDrawingEnabled ? Visibility.Visible : Visibility.Collapsed;
+            Cursor = _isDrawingEnabled ? Cursors.Pen : Cursors.Cross;
+            UpdateStatusText();
+        }
+
+        public void ToggleSpotlightOverlay()
+        {
+            _isSpotlightEnabled = !_isSpotlightEnabled;
+            SpotlightOverlay.Visibility = _isSpotlightEnabled ? Visibility.Visible : Visibility.Collapsed;
+            UpdateStatusText();
+        }
+
+        public void ToggleCursorOverlay()
+        {
+            _isCursorHighlightEnabled = !_isCursorHighlightEnabled;
+            CursorOverlay.Visibility = _isCursorHighlightEnabled ? Visibility.Visible : Visibility.Collapsed;
+            UpdateStatusText();
+        }
+
         private void CaptureBaseImage()
         {
             Hide();
@@ -73,20 +96,17 @@ namespace PresentPen.Views
             ZoomImage.RenderTransformOrigin = new Point(0, 0);
             ZoomImage.Margin = new Thickness(offsetX, offsetY, 0, 0);
 
-            // 커서 하이라이트 위치 업데이트
             if (_isCursorHighlightEnabled)
             {
                 UpdateZoomCursorHighlight(cursorPos);
             }
 
-            // 스포트라이트 위치 업데이트
             if (_isSpotlightEnabled)
             {
                 UpdateZoomSpotlight(cursorPos);
             }
         }
 
-        // === 줌 내 커서 하이라이트 ===
         private void UpdateZoomCursorHighlight(System.Drawing.Point cursorPos)
         {
             var state = AppState.Instance;
@@ -125,7 +145,6 @@ namespace PresentPen.Views
             Canvas.SetTop(ZoomCursorHighlight, cursorPos.Y - size / 2);
         }
 
-        // === 줌 내 스포트라이트 ===
         private void UpdateZoomSpotlight(System.Drawing.Point cursorPos)
         {
             var screenWidth = SystemParameters.PrimaryScreenWidth;
@@ -182,7 +201,7 @@ namespace PresentPen.Views
             else
                 _zoomLevel = Math.Max(_zoomLevel - 0.5, 1.0);
 
-            ZoomLevelText.Text = $"{_zoomLevel:F1}x";
+            UpdateStatusText();
             AppState.Instance.ZoomLevel = _zoomLevel;
         }
 
@@ -192,37 +211,6 @@ namespace PresentPen.Views
             {
                 case Key.Escape:
                     Close();
-                    break;
-
-                // Ctrl+1: 줌 내 그리기 토글
-                case Key.D1:
-                    if (Keyboard.Modifiers == ModifierKeys.Control)
-                    {
-                        _isDrawingEnabled = !_isDrawingEnabled;
-                        DrawOverlay.Visibility = _isDrawingEnabled ? Visibility.Visible : Visibility.Collapsed;
-                        Cursor = _isDrawingEnabled ? Cursors.Pen : Cursors.Cross;
-                        UpdateStatusText();
-                    }
-                    break;
-
-                // Ctrl+3: 줌 내 커서 하이라이트 토글
-                case Key.D3:
-                    if (Keyboard.Modifiers == ModifierKeys.Control)
-                    {
-                        _isCursorHighlightEnabled = !_isCursorHighlightEnabled;
-                        CursorOverlay.Visibility = _isCursorHighlightEnabled ? Visibility.Visible : Visibility.Collapsed;
-                        UpdateStatusText();
-                    }
-                    break;
-
-                // Ctrl+4: 줌 내 스포트라이트 토글
-                case Key.D4:
-                    if (Keyboard.Modifiers == ModifierKeys.Control)
-                    {
-                        _isSpotlightEnabled = !_isSpotlightEnabled;
-                        SpotlightOverlay.Visibility = _isSpotlightEnabled ? Visibility.Visible : Visibility.Collapsed;
-                        UpdateStatusText();
-                    }
                     break;
 
                 // Ctrl+Z: 줌 내 그리기 실행 취소

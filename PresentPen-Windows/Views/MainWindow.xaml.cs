@@ -36,30 +36,78 @@ namespace PresentPen.Views
                 if (e.PropertyName == nameof(AppState.CurrentMode))
                 {
                     UpdateStatusText();
+                    UpdateEscapeHotkey();
                 }
                 else if (e.PropertyName == nameof(AppState.IsCursorHighlightEnabled))
                 {
                     ToggleCursorHighlight();
+                    UpdateStatusText();
+                    UpdateEscapeHotkey();
                 }
             });
         }
 
         private void UpdateStatusText()
         {
-            StatusText.Text = AppState.Instance.CurrentMode switch
+            var mode = AppState.Instance.CurrentMode;
+            var highlight = AppState.Instance.IsCursorHighlightEnabled;
+
+            var modeText = mode switch
             {
                 AppMode.Zoom => "화면 확대 모드",
                 AppMode.Draw => "그리기 모드",
                 AppMode.Spotlight => "스포트라이트 모드",
                 AppMode.Timer => "타이머 활성화",
-                _ => "대기 중"
+                _ => ""
             };
+
+            if (highlight && modeText.Length > 0)
+                StatusText.Text = $"{modeText} + 커서 하이라이트";
+            else if (highlight)
+                StatusText.Text = "커서 하이라이트 활성화";
+            else if (modeText.Length > 0)
+                StatusText.Text = modeText;
+            else
+                StatusText.Text = "대기 중";
+        }
+
+        /// <summary>
+        /// 기능이 하나라도 활성화되어 있으면 ESC 핫키 등록, 아니면 해제
+        /// </summary>
+        private void UpdateEscapeHotkey()
+        {
+            bool anyActive = AppState.Instance.CurrentMode != AppMode.None
+                          || AppState.Instance.IsCursorHighlightEnabled;
+
+            if (anyActive)
+                HotkeyManager.Instance.RegisterEscapeHotkey();
+            else
+                HotkeyManager.Instance.UnregisterEscapeHotkey();
         }
 
         private void OnHotkeyPressed(AppMode mode)
         {
             Dispatcher.Invoke(() =>
             {
+                // 줌 활성 상태에서 다른 기능 키 → 줌 내부 기능 토글
+                if (_zoomWindow != null && mode != AppMode.Zoom)
+                {
+                    switch (mode)
+                    {
+                        case AppMode.Draw:
+                            _zoomWindow.ToggleDrawingOverlay();
+                            return;
+                        case AppMode.Spotlight:
+                            _zoomWindow.ToggleSpotlightOverlay();
+                            return;
+                        case AppMode.Timer:
+                            // 타이머는 줌과 별도로 동작
+                            ToggleTimer();
+                            return;
+                    }
+                    return;
+                }
+
                 switch (mode)
                 {
                     case AppMode.Zoom:
@@ -95,7 +143,16 @@ namespace PresentPen.Views
             }
             else
             {
-                CloseAllOverlays();
+                // 줌은 그리기/스포트라이트를 닫고 시작 (줌 내부에서 조합 가능)
+                _drawingWindow?.Close();
+                _drawingWindow = null;
+                if (_spotlightWindow != null)
+                {
+                    _spotlightWindow.Close();
+                    _spotlightWindow = null;
+                    MouseSpeedController.Instance.Stop();
+                }
+
                 _zoomWindow = new ZoomOverlayWindow();
                 _zoomWindow.Closed += (s, e) => _zoomWindow = null;
                 _zoomWindow.Show();
@@ -112,7 +169,16 @@ namespace PresentPen.Views
             }
             else
             {
-                CloseAllOverlays();
+                // 줌/스포트라이트 닫기
+                _zoomWindow?.Close();
+                _zoomWindow = null;
+                if (_spotlightWindow != null)
+                {
+                    _spotlightWindow.Close();
+                    _spotlightWindow = null;
+                    MouseSpeedController.Instance.Stop();
+                }
+
                 _drawingWindow = new DrawingCanvasWindow();
                 _drawingWindow.Closed += (s, e) => _drawingWindow = null;
                 _drawingWindow.Show();
@@ -126,12 +192,16 @@ namespace PresentPen.Views
             {
                 _spotlightWindow.Close();
                 _spotlightWindow = null;
-                // 마우스 속도 복원
                 MouseSpeedController.Instance.Stop();
             }
             else
             {
-                CloseAllOverlays();
+                // 줌/그리기 닫기
+                _zoomWindow?.Close();
+                _zoomWindow = null;
+                _drawingWindow?.Close();
+                _drawingWindow = null;
+
                 _spotlightWindow = new SpotlightWindow();
                 _spotlightWindow.Closed += (s, e) =>
                 {
@@ -140,7 +210,6 @@ namespace PresentPen.Views
                 };
                 _spotlightWindow.Show();
                 AppState.Instance.CurrentMode = AppMode.Spotlight;
-                // 마우스 속도 감속 (정밀 조작용)
                 MouseSpeedController.Instance.Start(3);
             }
         }
@@ -157,7 +226,9 @@ namespace PresentPen.Views
                 _timerWindow = new TimerWindow();
                 _timerWindow.Closed += (s, e) => _timerWindow = null;
                 _timerWindow.Show();
-                AppState.Instance.CurrentMode = AppMode.Timer;
+                // 타이머는 다른 모드와 독립적이므로, 다른 모드가 없을 때만 상태 변경
+                if (AppState.Instance.CurrentMode == AppMode.None)
+                    AppState.Instance.CurrentMode = AppMode.Timer;
             }
         }
 
@@ -194,9 +265,16 @@ namespace PresentPen.Views
                 MouseSpeedController.Instance.Stop();
             }
 
-            // 타이머도 닫기
             _timerWindow?.Close();
             _timerWindow = null;
+
+            // 커서 하이라이트도 함께 해제
+            if (AppState.Instance.IsCursorHighlightEnabled)
+            {
+                AppState.Instance.IsCursorHighlightEnabled = false;
+            }
+            _cursorHighlightWindow?.Close();
+            _cursorHighlightWindow = null;
 
             AppState.Instance.CurrentMode = AppMode.None;
         }
