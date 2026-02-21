@@ -159,7 +159,9 @@ namespace PresentPen.Views
         {
             if (e.Key == Key.Escape)
             {
-                (Application.Current.MainWindow as MainWindow)?.CloseAllFromOverlay();
+                e.Handled = true;
+                Dispatcher.BeginInvoke(() =>
+                    (Application.Current.MainWindow as MainWindow)?.CloseAllFromOverlay());
             }
             else if (e.Key == Key.Space)
             {

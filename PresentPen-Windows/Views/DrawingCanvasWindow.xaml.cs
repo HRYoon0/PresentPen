@@ -387,7 +387,9 @@ namespace PresentPen.Views
             switch (e.Key)
             {
                 case Key.Escape:
-                    (Application.Current.MainWindow as MainWindow)?.CloseAllFromOverlay();
+                    e.Handled = true;
+                    Dispatcher.BeginInvoke(() =>
+                        (Application.Current.MainWindow as MainWindow)?.CloseAllFromOverlay());
                     break;
 
                 case Key.Z:
