@@ -183,6 +183,7 @@
             <img src="assets/icon.png" alt="" style="width:38px; height:38px;">
             <span style="font-family:'Jua',sans-serif; font-size:20px; color:var(--ink);">PresentPen</span>
             <span style="font-size:13px; color:#9aa6b6;">v0.7.0</span>
+            <span id="visits" style="display:none; font-size:13px; color:#6b7890;">오늘 <b id="visits-today" style="font-weight:700;">-</b> · 전체 <b id="visits-total" style="font-weight:700;">-</b></span>
           </div>
           <p style="margin:0; font-size:14px; color:#9aa6b6; text-align:right; line-height:1.65;">수업과 강의를 위한 화면 강조 도구 · macOS 13+ / Windows 10·11 · 완전 무료<br><b style="font-weight:700; color:#6b7890;">제작 · 경남 황산초등학교 윤희류</b></p>
         </div>
@@ -325,6 +326,33 @@ document.querySelectorAll('.os-pill').forEach(function(p){
 });
 renderFeatures();
 setOS('mac');
+
+/* ---------------- 방문자 수 (Abacus 카운터 API, 정적 페이지라 외부 서비스 사용) ----------------
+   같은 브라우저는 하루 한 번만 센다(localStorage 표시). 날짜는 한국 시간 기준.
+   로컬 확인(localhost) 접속은 세지 않고 조회만 한다. 실패하면 표시를 숨긴다.
+   ※ IP당 10초 30회 제한 — 한 교실이 같은 공인 IP로 동시에 열면 일부는 표시가 안 뜰 수 있다. */
+(function(){
+  var API = 'https://abacus.jasoncameron.dev', NS = 'hryoon0-presentpen';
+  var day = new Intl.DateTimeFormat('en-CA', { timeZone: 'Asia/Seoul' }).format(new Date());   // 2026-09-17
+  var local = /^(localhost|127\.0\.0\.1)$/.test(location.hostname);
+  var mark = 'pp-visited-' + day, counted = false;
+  try { counted = localStorage.getItem(mark) === '1'; } catch (e) {}
+  var op = (local || counted) ? 'get' : 'hit';
+
+  function req(key){
+    var ctl = new AbortController(), t = setTimeout(function(){ ctl.abort(); }, 5000);
+    return fetch(API + '/' + op + '/' + NS + '/' + key, { signal: ctl.signal })
+      .then(function(r){ return r.ok ? r.json() : (r.status === 404 ? { value: 0 } : Promise.reject(r.status)); })  // 404 = 아직 방문 없음
+      .finally(function(){ clearTimeout(t); });
+  }
+  Promise.all([req('day-' + day), req('total')]).then(function(v){
+    if (op === 'hit') { try { localStorage.setItem(mark, '1'); } catch (e) {} }
+    var n = function(x){ return Number(x.value || 0).toLocaleString('ko-KR'); };
+    document.getElementById('visits-today').textContent = n(v[0]);
+    document.getElementById('visits-total').textContent = n(v[1]);
+    document.getElementById('visits').style.display = '';
+  }).catch(function(){ /* 서비스 장애·제한 → 조용히 숨김 */ });
+})();
 </script>
 </body>
 </html>
