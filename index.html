@@ -53,6 +53,7 @@
           <span style="text-align:left; line-height:1.15;"><span id="dl-label" style="display:block; font-size:19px; font-weight:700;"></span><span id="dl-sub" style="display:block; font-size:12px; font-weight:500; opacity:.85;"></span></span>
         </a>
         <p style="margin:20px 0 0; font-size:14px; color:var(--faint);">macOS v0.7.0 · Windows v0.6.0 · 완전 무료 · 회원가입 불필요</p>
+        <p id="dl-note" style="margin:10px 0 0; max-width:460px; word-break:keep-all; font-size:13px; line-height:1.6; color:var(--muted);">이전 버전에서 업데이트했는데 캡처·확대 화면이 회색으로 나오면, <b style="font-weight:700;">시스템 설정 › 개인정보 보호 및 보안 › 화면 및 시스템 오디오 녹음</b>에서 PresentPen을 껐다 켠 뒤 앱을 다시 실행해 주세요.</p>
       </div>
 
       <!-- Product window mockup with the REAL floating toolbar -->
@@ -304,6 +305,7 @@ function setOS(os){
   document.getElementById('dl-icon').innerHTML = DL[os].icon;
   document.getElementById('dl-label').textContent = DL[os].label;
   document.getElementById('dl-sub').textContent = DL[os].sub;
+  document.getElementById('dl-note').style.display = os === 'mac' ? '' : 'none';   // 화면 기록 권한 안내는 맥만
   // shortcut hint + table
   document.getElementById('sc-hint').textContent = HINT[os];
   renderShortcuts(os);
